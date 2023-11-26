@@ -109,11 +109,10 @@ async function get(id) {
 }
 
 
-async function create(todo) {
+async function create(todo, loggedUser=false) {
   delete todo.id;
   let createdTodo
 
-  const loggedUser = await Storage.getUserByJWT()
   if (loggedUser) {
     const { data, error } = await createTodo(todo, loggedUser.id)
     if (data) {
@@ -122,9 +121,8 @@ async function create(todo) {
   } else {
     createdTodo = Storage.create('todos', todo);
   }
-  TodoCard.create(createdTodo);
-  
-  await load()
+  // TodoCard.create(createdTodo);
+  // await load()
 }
 
 function updateSpinner() {
@@ -151,20 +149,18 @@ async function update(todo, isCreating=false) {
 
   const loggedUser = await Storage.getUserByJWT()
   
-  if (loggedUser) {
+  if (loggedUser && !isCreating) {
     try {
-
       const { data, erro } = await updateTodo(todo)
       updatedTodo = data[0]
     } catch (err) {
-      console.log('eita')
       console.log(err)
     }
   } else {
     updatedTodo = Storage.update('todos', id, todo);
   }
   if (!updatedTodo) {
-    await create(todo)
+    await create(todo, loggedUser)
   }
 }
 

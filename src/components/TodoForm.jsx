@@ -1,29 +1,62 @@
 import { formatDate } from '@/lib/format';
+import Todos from '@/lib/todos';
 import { useState } from 'react';
 
 
-export function TodoForm({ title, text, priority, date, onCancel, onSubmit, formTitle }) {
+export function TodoForm({ title, text, priority, date, formTitle, onTodoAdded, onSubmit }) {
 
-    const [formData, setFormData] = useState({
-      title: title || '',
-      text: text || '',
-      priority: priority || 'normal',
-      date: date || '',
-    });
+  const [formData, setFormData] = useState({
+    title: title || '',
+    text: text || '',
+    priority: priority || 'normal',
+    date: date || new Date().toISOString(),
+  });
 
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    };
 
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      // Chame a função onSubmit passando os dados do formulário
-      onSubmit(formData);
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  function handleBlur() {
+    setFormData((prevData) => ({
+      ...prevData,
+      title: formData.title.trim(),
+      text: formData.text.trim(),
+      })
+    )
+  }
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await Todos.update(formData, true);
+  
+    } catch (error) {
+      console.error('Erro durante a execução assíncrona:', error);
+    }
+
+    if (onSubmit) {
+      onSubmit();
+    }
+
+    // Chama a função de callback para indicar que um novo afazer foi adicionado
+
+      setFormData({
+        title: '',
+        text: '',
+        priority: 'normal',
+        date: new Date().toISOString(),
+    });    
+
+    if (onTodoAdded) {
+      onTodoAdded();
+    }
+  };
 
     return (
         <>
@@ -43,13 +76,14 @@ export function TodoForm({ title, text, priority, date, onCancel, onSubmit, form
                     Título
                 </label>
                 <input
-                    required=""
+                    required={true}
                     maxLength={50}
                     type="text"
                     id="title"
                     name="title"
                     value={formData.title}
                     onChange={handleChange}
+                    onBlur={handleBlur}
                     className="mt-1 mb-1 w-full py-3 px-4 block border text-violet-800 border-violet-200 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
                 />
                 </div>
@@ -61,12 +95,13 @@ export function TodoForm({ title, text, priority, date, onCancel, onSubmit, form
                     Texto
                 </label>
                 <textarea
-                    required=""
+                    required={true}
                     maxLength={300}
                     id="text"
                     name="text"
                     value={formData.text}
                     onChange={handleChange}
+                    onBlur={handleBlur}
                     rows={4}
                     className=" w-full block p-2.5 text-lg text-violet-900 bg-violet-50 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder-violet-400"
                     placeholder="Descreva o seu afazer..."

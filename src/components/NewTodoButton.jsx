@@ -11,8 +11,13 @@ import {
 } from "tw-elements-react";
 
 
-export function NewTodoButton() {
+export function NewTodoButton({ onTodoAdded }) {
     const [showModal, setShowModal] = useState(false);
+
+    const handleSubmit = async () => {
+        setShowModal(false)
+      };
+
     return (
       <div>
         {/* <!-- Button trigger modal --> */}
@@ -62,7 +67,12 @@ export function NewTodoButton() {
               </TEModalHeader>
               {/* <!--Modal body--> */}
               <TEModalBody>
-                  <TodoForm formTitle={'Novo Afazer'}/></TEModalBody>
+                  <TodoForm 
+                    formTitle={'Novo Afazer'}
+                    onTodoAdded={onTodoAdded}
+                    onSubmit={handleSubmit}
+                  />
+                </TEModalBody>
           </div>
             </TEModalContent>
           </TEModalDialog>
