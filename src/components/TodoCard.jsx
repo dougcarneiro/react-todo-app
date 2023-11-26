@@ -22,15 +22,18 @@ export default function TodoCard({
     is_completed,
     date,
     created_at,
+    onSubmit
 
 }) {
 
     const todo = {
+        id: id,
         title: title,
         text: text,
         priority: priority,
         is_completed: is_completed,
         date: date,
+        created_at: created_at,
     }
 
     function priorityColor(priority) {
@@ -57,6 +60,9 @@ export default function TodoCard({
         setEditingTodo(todo)
     }
 
+    const handleUpdateSubmit = () => {
+        onSubmit()
+      };
     return (
 
     <div
@@ -93,7 +99,7 @@ export default function TodoCard({
                <Icon icon="solar:trash-bin-minimalistic-broken" 
                onClick={handleDeleteTodo}/>
             </span>
-            <EditTodoButton todo={todo} editTodoClick={handleUpdateTodo} />
+            <EditTodoButton todo={todo} editTodoClick={handleUpdateTodo} onSubmit={handleUpdateSubmit} />
         </div>
     </div>
     

@@ -71,6 +71,7 @@ export function NewTodoButton({ onTodoAdded }) {
                     formTitle={'Novo Afazer'}
                     onTodoAdded={onTodoAdded}
                     onSubmit={handleSubmit}
+                    isCreating={true}
                   />
                 </TEModalBody>
           </div>

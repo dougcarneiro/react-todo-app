@@ -3,7 +3,6 @@
 import { NewTodoButton } from "@/components/NewTodoButton";
 import TodoCard from "@/components/TodoCard";
 import Todos from "@/lib/todos";
-import Storage from "@/services/storage";
 
 import { useState } from 'react';
 
@@ -17,7 +16,6 @@ export function Home() {
         try {
             const fetchedTodos = await Todos.load()
             setTodos(fetchedTodos)
-            console.log(fetchedTodos)
             setTodosFetched(true)
         } catch (error) {
             console.error('Erro ao buscar dados:', error);
@@ -25,7 +23,7 @@ export function Home() {
     };
 
     if (!todosFetched) {
-        Storage.loadSeed('todos', []);
+        Todos.loadStorage()
         fetchData()
     }
     
@@ -43,13 +41,13 @@ export function Home() {
                     </a>
                     <h2 id="not-found-todo" className="text-center text-2xl my-12 font-bold text-violet-900"></h2>
                     <div className="fixed bottom-8 left-8 md:top-8 z-[99]">
-                        <NewTodoButton onTodoAdded={fetchData} />
+                        <NewTodoButton onTodoAdded={fetchData}/>
                     </div>
 
                 {todos && (
                     <div className="todo mx-2 mb-10 grid grid-cols-1 gap-2 md:mx-8 md:grid-cols-2 xl:grid-cols-2">
                     {todos.map((todo) => (
-                        <TodoCard {...todo} key={todo.id} />
+                        <TodoCard {...todo} key={todo.id} onSubmit={fetchData}/>
                     ))}
                     </div>
                 )}

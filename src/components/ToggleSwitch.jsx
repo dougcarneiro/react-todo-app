@@ -1,15 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Todos from '@/lib/todos';
 
 
 export function StatusToggle({is_completed, id}) {
-    const [isChecked, setIsChecked] = useState(is_completed);
+    const [isChecked, setIsChecked] = useState(!!is_completed);
+    
+    useEffect(() => {
+        setIsChecked(!!is_completed);
+    }, [is_completed]);
 
     async function toggleStatus() {
-        const todo = await Todos.get(id)
-        setIsChecked(!isChecked);
-        todo.is_completed = !isChecked
-        await Todos.update(todo)
+        const todo = await Todos.get(id);
+        setIsChecked((prevChecked) => !prevChecked);
+        todo.is_completed = !isChecked;
+        await Todos.update(todo);
     }
 
     return (
@@ -19,7 +23,7 @@ export function StatusToggle({is_completed, id}) {
             <label className="todo-toggle-status relative inline-flex items-center cursor-pointer">
                 <input
                 type="checkbox"
-                defaultValue=""
+                defaultValue={false}
                 className="sr-only peer"
                 checked={isChecked}
                 onChange={toggleStatus}

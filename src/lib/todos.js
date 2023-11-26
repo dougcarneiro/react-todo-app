@@ -143,26 +143,27 @@ function clearUpdateSpinner() {
     $('.todo').classList.remove('blur-md')
 }
 
-async function update(todo, isCreating=false) {
+async function update(todo, isCreating) {
   const { id } = todo;
   let updatedTodo
 
   const loggedUser = await Storage.getUserByJWT()
-  
-  if (loggedUser && !isCreating) {
-    try {
-      const { data, erro } = await updateTodo(todo)
-      updatedTodo = data[0]
-    } catch (err) {
-      console.log(err)
+
+  if (isCreating) {
+      await create(todo, loggedUser)
+    } else {
+      if (loggedUser) {
+        try {
+          const { data, erro } = await updateTodo(todo)
+          updatedTodo = data[0]
+        } catch (err) {
+          console.log(err)
+        }
+      } else {
+        updatedTodo = Storage.update('todos', id, todo);
+      }
     }
-  } else {
-    updatedTodo = Storage.update('todos', id, todo);
   }
-  if (!updatedTodo) {
-    await create(todo, loggedUser)
-  }
-}
 
 async function remove(todo) {
   const { id } = todo;
@@ -178,6 +179,8 @@ async function remove(todo) {
     load()
 }
 
+function loadStorage(seed=[]) {
+  Storage.loadSeed('todos', seed)
+}
 
-
-export default { load, get, create, update, remove };
+export default { load, get, create, update, remove, loadStorage };

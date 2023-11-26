@@ -11,20 +11,19 @@ import {
 } from "tw-elements-react";
 
 
-export function EditTodoButton({ todo, editTodoClick }) {
+export function EditTodoButton({ todo, editTodoClick, onSubmit}) {
     const [showModal, setShowModal] = useState(false);
-
-    const [formData, setFormData] = useState({
-      title: todo.title,
-      text: todo.text,
-      priority: todo.priority,
-      date: todo.date,
-    });
 
     const handleEditTodoClick = () => {
       // Chame a função onClick passando o objeto todo
       editTodoClick(todo);
       setShowModal(true);
+    };
+
+    const handleSubmit = async () => {
+      onSubmit()
+      setShowModal(false)
+
     };
 
     return (
@@ -75,9 +74,12 @@ export function EditTodoButton({ todo, editTodoClick }) {
               </TEModalHeader>
               {/* <!--Modal body--> */}
               <TEModalBody>
-                <TodoForm {...formData}
+                <TodoForm {...todo}
                   onCancel={() => setShowModal(false)}
-                  formTitle={'Alterar Afazer'}/>
+                  formTitle={'Alterar Afazer'}
+                  onSubmit={handleSubmit}
+                  isCreating={false}
+                  />
                 </TEModalBody>
           </div>
             </TEModalContent>

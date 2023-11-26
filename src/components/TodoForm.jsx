@@ -3,7 +3,7 @@ import Todos from '@/lib/todos';
 import { useState } from 'react';
 
 
-export function TodoForm({ title, text, priority, date, formTitle, onTodoAdded, onSubmit }) {
+export function TodoForm({ id, title, text, priority, date, created_at, formTitle, onTodoAdded, onSubmit, isCreating }) {
 
   const [formData, setFormData] = useState({
     title: title || '',
@@ -33,12 +33,23 @@ export function TodoForm({ title, text, priority, date, formTitle, onTodoAdded, 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const todo = {
       ...formData,
-      created_at: new Date().toISOString()
+      created_at: created_at,
     }
+
+    if (id) {
+      todo.id = id
+    }
+
+
+    if (!todo.created_at) {
+      todo.created_at = new Date().toISOString()
+    }
+
     try {
-      await Todos.update(todo, true);
+      await Todos.update(todo, isCreating);
   
     } catch (error) {
       console.error('Erro durante a execução assíncrona:', error);
@@ -46,19 +57,16 @@ export function TodoForm({ title, text, priority, date, formTitle, onTodoAdded, 
 
     if (onSubmit) {
       onSubmit();
-    }
+    }      
 
-    // Chama a função de callback para indicar que um novo afazer foi adicionado
-
+    if (onTodoAdded) {
+      onTodoAdded();
       setFormData({
         title: '',
         text: '',
         priority: 'normal',
         date: new Date().toISOString(),
-    });    
-
-    if (onTodoAdded) {
-      onTodoAdded();
+      });    
     }
   };
 
