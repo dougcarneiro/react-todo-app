@@ -25,5 +25,6 @@ module.exports = {
 
     },
   },
+  darkMode: "class",
   plugins: [require('preline/plugin'), require('@tailwindcss/forms'), require("tw-elements-react/dist/plugin.cjs")],
 }

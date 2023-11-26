@@ -2,8 +2,8 @@
 
 import('preline')
 
+import { NewTodoButton } from "@/components/NewTodoButton";
 import TodoCard from "@/components/TodoCard";
-import { NewTodo } from "@/components/TodoForm";
 import Todos from "@/lib/todos";
 
 import { useEffect, useState } from 'react';
@@ -40,7 +40,7 @@ export function Home() {
                     </a>
                     <h2 id="not-found-todo" className="text-center text-2xl my-12 font-bold text-violet-900"></h2>
                     <div className="fixed bottom-8 left-8 md:top-8 z-[99]">
-                        <NewTodo modalTitle={'Novo Afazer'}/>
+                        <NewTodoButton/>
                     </div>
 
                 {todos && (

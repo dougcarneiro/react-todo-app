@@ -1,13 +1,9 @@
-'use client';
-
-import('preline')
-
 import { Icon } from '@iconify/react';
 
 import { formatDate } from '@/lib/format';
 
 import StatusToggle from './ToggleSwitch';
-import { EditModal, EditTodo } from './TodoForm';
+import { EditTodoButton } from './EditTodoButton';
 import { useState } from 'react';
 
 
@@ -29,6 +25,14 @@ export default function TodoCard({
 
 }) {
 
+    const todo = {
+        title: title,
+        text: text,
+        priority: priority,
+        is_completed: is_completed,
+        date: date,
+    }
+
     function priorityColor(priority) {
         if (priority == 'light') {
             return background.light
@@ -46,6 +50,12 @@ export default function TodoCard({
         confirm(`Deseja remover ${title}?`)
     };    
 
+
+    const [editingTodo, setEditingTodo] = useState(null);
+
+    function handleUpdateTodo() {
+        setEditingTodo(todo)
+    }
 
     return (
 
@@ -65,14 +75,14 @@ export default function TodoCard({
             </span>
             </p>
             <p className="mt-4 text-sm text-gray-500">
-            <span className="font-bold">Data do Afazer:</span>
+            <span className="font-bold">Data do Afazer: </span>
             <span className="todo-date">
                 {formatDate(date)}
             </span>
             </p>
             <p className="mt-4 text-sm text-gray-500">
-            <span className="font-bold">Criado em:</span>
-            <span className="todo-created-at"> {formatDate(created_at)}</span>
+            <span className="font-bold">Criado em: </span>
+            <span className="todo-created-at">{formatDate(created_at)}</span>
             </p>
         </div>
         <div className="absolute bottom-4 right-4 inline-flex">
@@ -83,7 +93,7 @@ export default function TodoCard({
                <Icon icon="solar:trash-bin-minimalistic-broken" 
                onClick={handleDeleteTodo}/>
             </span>
-            <EditTodo modalTitle={'Alterar Afazer'}/>
+            <EditTodoButton todo={todo} editTodoClick={handleUpdateTodo} />
         </div>
     </div>
     
