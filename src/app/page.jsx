@@ -3,6 +3,7 @@
 import { NewTodoButton } from "@/components/NewTodoButton";
 import TodoCard from "@/components/TodoCard";
 import Todos from "@/lib/todos";
+import Storage from "@/services/storage";
 
 import { useState } from 'react';
 
@@ -10,17 +11,23 @@ import { useState } from 'react';
 export function Home() {
     
     const [todos, setTodos] = useState(null);
+    const [todosFetched, setTodosFetched] = useState(false);
 
     const fetchData = async () => {
         try {
             const fetchedTodos = await Todos.load()
             setTodos(fetchedTodos)
+            console.log(fetchedTodos)
+            setTodosFetched(true)
         } catch (error) {
             console.error('Erro ao buscar dados:', error);
         }
     };
 
-    fetchData()
+    if (!todosFetched) {
+        Storage.loadSeed('todos', []);
+        fetchData()
+    }
     
     return (
         <> 

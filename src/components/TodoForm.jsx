@@ -33,8 +33,12 @@ export function TodoForm({ title, text, priority, date, formTitle, onTodoAdded, 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const todo = {
+      ...formData,
+      created_at: new Date().toISOString()
+    }
     try {
-      await Todos.update(formData, true);
+      await Todos.update(todo, true);
   
     } catch (error) {
       console.error('Erro durante a execução assíncrona:', error);
