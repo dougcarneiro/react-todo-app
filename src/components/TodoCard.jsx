@@ -7,7 +7,8 @@ import { Icon } from '@iconify/react';
 import { formatDate } from '@/lib/format';
 
 import StatusToggle from './ToggleSwitch';
-import { EditModal } from './TodoForm';
+import { EditModal, EditTodo } from './TodoForm';
+import { useState } from 'react';
 
 
 const background = {
@@ -45,6 +46,7 @@ export default function TodoCard({
         confirm(`Deseja remover ${title}?`)
     };    
 
+
     return (
 
     <div
@@ -81,7 +83,7 @@ export default function TodoCard({
                <Icon icon="solar:trash-bin-minimalistic-broken" 
                onClick={handleDeleteTodo}/>
             </span>
-            <EditModal/>
+            <EditTodo modalTitle={'Alterar Afazer'}/>
         </div>
     </div>
     
