@@ -1,11 +1,11 @@
 'use client';
 
 import { NewTodoButton } from "@/components/NewTodoButton";
+import Spinner from "@/components/Spinner";
 import TodoCard from "@/components/TodoCard";
 import Todos from "@/lib/todos";
 
-import { useState } from 'react';
-import { MoonLoader } from "react-spinners";
+import { useState, useEffect } from 'react';
 
 
 export function Home() {
@@ -14,14 +14,14 @@ export function Home() {
     const [todosFetched, setTodosFetched] = useState(false);
 
     const fetchData = async () => {
-        try {
-            const fetchedTodos = await Todos.load()
-            setTodos(fetchedTodos)
-            setTodosFetched(true)
-        } catch (error) {
-            console.error('Erro ao buscar dados:', error);
+            try {
+                const fetchedTodos = await Todos.load()
+                setTodos(fetchedTodos)
+                setTodosFetched(true)
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+            }
         }
-    };
 
     if (!todosFetched) {
         Todos.loadStorage()
@@ -68,7 +68,7 @@ export function Home() {
                     
                 {!todos && (
                     <div className="absolute mt-20 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                        <MoonLoader color="#5b21b6" />
+                        <Spinner size={'14'}/>
                     </div>
                 )}
                 {todos && (

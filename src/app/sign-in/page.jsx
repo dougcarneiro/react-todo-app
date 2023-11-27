@@ -5,8 +5,10 @@ import React, { useState, useEffect } from 'react';
 import { signUp, singIn } from '@/services/supabase';
 import { signJWT } from '@/services/jwt';
 import Storage from '@/services/storage';
-import { MoonLoader } from 'react-spinners';
 import SingInUpConfirmButton from '@/components/signInUpConfirmButton';
+import SingInUpButtonSpinner from '@/components/signInUpButtonSpinner';
+import SingInUpDisabledButton from '@/components/signInUpDisabledButton';
+import Spinner from '@/components/Spinner';
 
 
 export default function SignIn() {
@@ -21,6 +23,12 @@ export default function SignIn() {
       });
 
       const [showInvalidCredentialsAlert, setInvalidCredentialsAlert] = useState(false);
+      const [showLogInButton, setShowLoginButton] = useState(true);
+      const [showSignInButton, setShowSignInButton] = useState(false);
+      const [showLoadingButton, setShowLoadingButton] = useState(false);
+      const [showDisabledConfirm, setShowDisabledConfirm] = useState(false);
+      const [showDisableEnter, setShowDisableEnter] = useState(false);
+
 
       let [formData, setFormData] = useState({
         name: '',
@@ -32,6 +40,8 @@ export default function SignIn() {
 
     async function handleSignIn() {
         setInvalidCredentialsAlert(false)
+        setShowLoginButton(false)
+        setShowSignInButton(true)
         setState((prevState) => {
             return Object.fromEntries(
               Object.entries(prevState).map(([key, value]) => [key, !value])
@@ -47,8 +57,10 @@ export default function SignIn() {
     }
 
     async function handleSubmit(event) {
-        let error
         event.preventDefault()
+        let error
+        setShowSignInButton(false)
+        setShowLoadingButton(true)
         const isSignUp = formData.name === '' ? false : true
         if (isSignUp) {
             // error = passwordsDiff()
@@ -56,7 +68,7 @@ export default function SignIn() {
         if (isSignUp) {
             const { data, error } = await signUp(formData)
             
-            if (!data) {
+            if (data) {
             } else {
                 await generateToken(data)
             }
@@ -64,14 +76,12 @@ export default function SignIn() {
             const { data, error } = await singIn(formData.email, formData.password)
             if (!data) {
                 setInvalidCredentialsAlert(true)
+                setShowLoadingButton(false)
+                setShowSignInButton(true)
             } else {
                 await generateToken(data)
             }
         }
-    }
-
-    function removeCrendentialsAlert() {
-        setInvalidCredentialsAlert(false)
     }
 
     async function generateToken(data) {
@@ -116,7 +126,7 @@ export default function SignIn() {
 
                 {!fetchedUser && (
                 <div className="mx-auto my-14">
-                        <MoonLoader color="#5b21b6" />
+                        <Spinner size={'14'}/>
                     </div>
                 )}
                 
@@ -152,7 +162,7 @@ export default function SignIn() {
                     </label>
                     <div className="mt-2">
                         <input
-                        required=""
+                        required={true}
                         id="email"
                         name="email"
                         type="email"
@@ -190,7 +200,7 @@ export default function SignIn() {
                         </div>
                         <div className="mt-2">
                             <input
-                            required=""
+                            required={true}
                             id="password"
                             name="password"
                             maxLength={30}
@@ -218,7 +228,7 @@ export default function SignIn() {
                             </div>
                             <div className="mt-2">
                                 <input
-                                required=""
+                                required={true}
                                 maxLength={30}
                                 id="confirm-password"
                                 name="confirmPassword"
@@ -250,7 +260,7 @@ export default function SignIn() {
                             role="button"
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 20 20"
-                            onClick={removeCrendentialsAlert}
+                            onClick={setInvalidCredentialsAlert(false)}
                             >
                             <title>Fechar</title>
                             <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
@@ -258,16 +268,25 @@ export default function SignIn() {
                         </span>
                     </div>)}
                     <div id="sign-in-button-div" className="">
-                    {state.showLogInButton && (
+                   {showLoadingButton && (
+                        <SingInUpButtonSpinner/>)}
+                    {showLogInButton && (
                         <SingInUpConfirmButton 
                             handleSubmit={handleSubmit}
                             buttonTitle={'Entrar'}/>
                         )}
-                    {state.showSignInButton && (
+                    {showDisableEnter && (
+                        <SingInUpDisabledButton 
+                            buttonTitle={'Entrar'}
+                            />)}
+
+                    {showSignInButton && (
                     <SingInUpConfirmButton 
                         handleSubmit={handleSubmit}
                         buttonTitle={'Confirmar'}/>
                     )}
+                    {showDisabledConfirm && (
+                        <SingInUpDisabledButton buttonTitle={'Confirmar'}/>)}
                     </div>
                 </form>
                 {state.showGoToSignInButton && (<div id="sign-up-div">
