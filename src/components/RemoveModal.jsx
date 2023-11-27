@@ -1,4 +1,3 @@
-import Todos from "@/lib/todos";
 import { Icon } from "@iconify/react";
 import { useState } from "react";
 import {
@@ -16,14 +15,12 @@ export function RemoveModal({todo, onRemove}) {
     const [showModal, setShowModal] = useState(false);
 
     const handleEditTodoClick = () => {
-        // Chame a função onClick passando o objeto todo
         setShowModal(true);
       };
 
     const handleSubmit = async () => {
-        await Todos.remove(todo)
+        onRemove(todo)
         setShowModal(false)
-        onRemove()
         
       };
 

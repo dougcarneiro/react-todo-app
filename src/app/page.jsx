@@ -26,6 +26,11 @@ export function Home() {
         Todos.loadStorage()
         fetchData()
     }
+
+    const removeData = async (todo) => {
+        await Todos.remove(todo)
+        fetchData()
+    }
     
     return (
         <> 
@@ -47,7 +52,7 @@ export function Home() {
                 {todos && (
                     <div className="todo mx-2 mb-10 grid grid-cols-1 gap-2 md:mx-8 md:grid-cols-2 xl:grid-cols-2">
                     {todos.map((todo) => (
-                        <TodoCard {...todo} key={todo.id} onSubmit={fetchData} onRemove={fetchData}/>
+                        <TodoCard {...todo} key={todo.id} onSubmit={fetchData} onRemove={removeData}/>
                     ))}
                     </div>
                 )}
