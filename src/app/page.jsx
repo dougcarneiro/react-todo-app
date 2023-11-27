@@ -57,7 +57,11 @@ export function Home() {
                             A melhor forma de organizar seus afazeres
                         </h2>
                     </a>
-                    <h2 id="not-found-todo" className="text-center text-2xl my-12 font-bold text-violet-900"></h2>
+                    {todos && todos.length == 0 && (
+                    <h2 className="text-center text-2xl my-12 font-bold text-violet-900">
+                        Você não possui afazeres.
+                    </h2>
+                    )}
                     <div className="fixed bottom-8 left-8 md:top-8 z-[99]">
                         <NewTodoButton onTodoAdded={todoChange}/>
                     </div>
@@ -68,7 +72,7 @@ export function Home() {
                     </div>
                 )}
                 {todos && (
-                    <div className="todo mx-2 mb-10 grid grid-cols-1 gap-2 md:mx-8 md:grid-cols-2 xl:grid-cols-2">
+                    <div className="todo mx-2 mb-10 mt-12 grid grid-cols-1 gap-2 md:mx-8 md:grid-cols-2 xl:grid-cols-2">
                     {todos.map((todo) => (
                         <TodoCard 
                             {...todo} 
