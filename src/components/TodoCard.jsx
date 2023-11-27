@@ -24,7 +24,8 @@ export default function TodoCard({
     date,
     created_at,
     onSubmit,
-    onRemove
+    onRemove,
+    onStatusChange
 
 }) {
 
@@ -61,7 +62,11 @@ export default function TodoCard({
     <div
         className={`shadow-md rounded-lg p-4 relative overflow-y-auto ${priorityColor(priority)}`}
         >
-       {<StatusToggle is_completed={ is_completed } id={ id }/>}
+       {<StatusToggle 
+            is_completed={ is_completed } 
+            id={ id }
+            onStatusChange={onStatusChange}
+            />}
         <div className="flex justify-between items-center">
         <h3 className="todo-title text-lg font-semibold text-gray-700">
         {title}

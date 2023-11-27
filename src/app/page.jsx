@@ -31,6 +31,12 @@ export function Home() {
         await Todos.remove(todo)
         fetchData()
     }
+
+    const statusChange = async (todoId, newStatus) => {
+        const todo = await Todos.get(todoId)
+        todo.is_completed = newStatus
+        await Todos.update(todo);
+    }
     
     return (
         <> 
@@ -52,7 +58,13 @@ export function Home() {
                 {todos && (
                     <div className="todo mx-2 mb-10 grid grid-cols-1 gap-2 md:mx-8 md:grid-cols-2 xl:grid-cols-2">
                     {todos.map((todo) => (
-                        <TodoCard {...todo} key={todo.id} onSubmit={fetchData} onRemove={removeData}/>
+                        <TodoCard 
+                            {...todo} 
+                            key={todo.id} 
+                            onSubmit={fetchData} 
+                            onRemove={removeData}
+                            onStatusChange={statusChange}
+                            />
                     ))}
                     </div>
                 )}

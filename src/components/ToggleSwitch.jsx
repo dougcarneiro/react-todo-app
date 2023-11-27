@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import Todos from '@/lib/todos';
 
 
-export function StatusToggle({is_completed, id}) {
+export function StatusToggle({is_completed, id, onStatusChange}) {
     const [isChecked, setIsChecked] = useState(!!is_completed);
     
     useEffect(() => {
@@ -10,10 +9,8 @@ export function StatusToggle({is_completed, id}) {
     }, [is_completed]);
 
     async function toggleStatus() {
-        const todo = await Todos.get(id);
         setIsChecked((prevChecked) => !prevChecked);
-        todo.is_completed = !isChecked;
-        await Todos.update(todo);
+        onStatusChange(id, !isChecked)
     }
 
     return (
