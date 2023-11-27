@@ -174,9 +174,6 @@ async function remove(todo) {
   } else {
     Storage.remove('todos', id);
   }
-    TodoCard.remove(id);
-
-    load()
 }
 
 function loadStorage(seed=[]) {

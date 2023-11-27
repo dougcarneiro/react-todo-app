@@ -56,7 +56,7 @@ export function TodoForm({ id, title, text, priority, date, created_at, formTitl
     }
 
     if (onSubmit) {
-      onSubmit();
+      onSubmit()
     }      
 
     if (onTodoAdded) {

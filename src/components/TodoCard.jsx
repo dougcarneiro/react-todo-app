@@ -5,6 +5,7 @@ import { formatDate } from '@/lib/format';
 import StatusToggle from './ToggleSwitch';
 import { EditTodoButton } from './EditTodoButton';
 import { useState } from 'react';
+import { RemoveModal } from './RemoveModal';
 
 
 const background = {
@@ -22,7 +23,8 @@ export default function TodoCard({
     is_completed,
     date,
     created_at,
-    onSubmit
+    onSubmit,
+    onRemove
 
 }) {
 
@@ -47,22 +49,13 @@ export default function TodoCard({
             return background.normal
           }
     }
-    
-
-    const handleDeleteTodo = (title) => {
-        confirm(`Deseja remover ${title}?`)
-    };    
-
-
+       
     const [editingTodo, setEditingTodo] = useState(null);
 
     function handleUpdateTodo() {
         setEditingTodo(todo)
     }
 
-    const handleUpdateSubmit = () => {
-        onSubmit()
-      };
     return (
 
     <div
@@ -92,14 +85,12 @@ export default function TodoCard({
             </p>
         </div>
         <div className="absolute bottom-4 right-4 inline-flex">
-            <span
-            className="icon-trash mr-1 text-gray-400 hover:text-gray-700 cursor-pointer"
-            data-hs-overlay="#remove-modal"
-            >
-               <Icon icon="solar:trash-bin-minimalistic-broken" 
-               onClick={handleDeleteTodo}/>
+            <span className='mx-0.5'>
+                <RemoveModal todo={todo} onRemove={onRemove} />
             </span>
-            <EditTodoButton todo={todo} editTodoClick={handleUpdateTodo} onSubmit={handleUpdateSubmit} />
+            <span className='mx-0.5'>
+                <EditTodoButton todo={todo} editTodoClick={handleUpdateTodo} onSubmit={onSubmit} />
+            </span>
         </div>
     </div>
     
