@@ -6,6 +6,7 @@ import { signUp, singIn } from '@/services/supabase';
 import { signJWT } from '@/services/jwt';
 import Storage from '@/services/storage';
 import { MoonLoader } from 'react-spinners';
+import SingInUpConfirmButton from '@/components/signInUpConfirmButton';
 
 
 export default function SignIn() {
@@ -53,22 +54,16 @@ export default function SignIn() {
             // error = passwordsDiff()
         } 
         if (isSignUp) {
-            // LoadSpinnerOnButton.loading('sign-up-confirm')
             const { data, error } = await signUp(formData)
             
             if (!data) {
-                // LoadSpinnerOnButton.remove('sign-up-confirm')
-                // signUpError(true, undefined, undefined)
             } else {
                 await generateToken(data)
             }
         } else {
-            // LoadSpinnerOnButton.loading('sign-in-confirm')
             const { data, error } = await singIn(formData.email, formData.password)
             if (!data) {
                 setInvalidCredentialsAlert(true)
-                // LoadSpinnerOnButton.remove('sign-in-confirm')
-                // event.preventDefault()
             } else {
                 await generateToken(data)
             }
@@ -216,7 +211,7 @@ export default function SignIn() {
                             <div className="flex items-center justify-between">
                                 <label
                                 htmlFor="password"
-                                className="block text-sm font-medium leading-6 text-gray-900"
+                                className="block text-sm font-medium leading-6 text-violet-900"
                                 >
                                 Confirme a senha
                                 </label>
@@ -263,22 +258,16 @@ export default function SignIn() {
                         </span>
                     </div>)}
                     <div id="sign-in-button-div" className="">
-                    {state.showLogInButton && (<button
-                        id="sign-in-confirm"
-                        type="submit"
-                        onClick={handleSubmit}
-                        className="flex w-full justify-center rounded-md bg-violet-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600"
-                    >
-                        Entrar
-                    </button>)}
-                    {state.showSignInButton && (<button
-                        id="sign-up-confirm"
-                        type="submit"
-                        className="flex w-full justify-center rounded-md bg-violet-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600"
-                        onClick={handleSubmit}
-                        >
-                        Cadastrar
-                    </button>)}
+                    {state.showLogInButton && (
+                        <SingInUpConfirmButton 
+                            handleSubmit={handleSubmit}
+                            buttonTitle={'Entrar'}/>
+                        )}
+                    {state.showSignInButton && (
+                    <SingInUpConfirmButton 
+                        handleSubmit={handleSubmit}
+                        buttonTitle={'Confirmar'}/>
+                    )}
                     </div>
                 </form>
                 {state.showGoToSignInButton && (<div id="sign-up-div">
