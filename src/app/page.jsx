@@ -5,6 +5,7 @@ import TodoCard from "@/components/TodoCard";
 import Todos from "@/lib/todos";
 
 import { useState } from 'react';
+import { MoonLoader } from "react-spinners";
 
 
 export function Home() {
@@ -27,8 +28,14 @@ export function Home() {
         fetchData()
     }
 
+    const todoChange = async () => {
+        setTodos(null)
+        fetchData()
+    }
+
     const removeData = async (todo) => {
         await Todos.remove(todo)
+        setTodos(null)
         fetchData()
     }
 
@@ -52,16 +59,21 @@ export function Home() {
                     </a>
                     <h2 id="not-found-todo" className="text-center text-2xl my-12 font-bold text-violet-900"></h2>
                     <div className="fixed bottom-8 left-8 md:top-8 z-[99]">
-                        <NewTodoButton onTodoAdded={fetchData}/>
+                        <NewTodoButton onTodoAdded={todoChange}/>
                     </div>
-
+                    
+                {!todos && (
+                    <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        <MoonLoader color="#5b21b6" />
+                    </div>
+                )}
                 {todos && (
                     <div className="todo mx-2 mb-10 grid grid-cols-1 gap-2 md:mx-8 md:grid-cols-2 xl:grid-cols-2">
                     {todos.map((todo) => (
                         <TodoCard 
                             {...todo} 
                             key={todo.id} 
-                            onSubmit={fetchData} 
+                            onSubmit={todoChange} 
                             onRemove={removeData}
                             onStatusChange={statusChange}
                             />
