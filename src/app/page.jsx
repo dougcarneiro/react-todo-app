@@ -19,10 +19,14 @@ export function Home() {
     const [todos, setTodos] = useState(null);
     const [fetchTodos, setFetchTodos] = useState(true);
     const [showSpinner, setShowSpinner] = useState(true)
+    const [blurTodos, setBlurTodos] = useState('')
+
+    const blurMd = 'blur-md'
 
     const fetchData = async () => {
             try {
                 const fetchedTodos = await Todos.load()
+                setBlurTodos('')
                 setTodos(fetchedTodos)
                 setShowSpinner(false)
             } catch (error) {
@@ -35,21 +39,30 @@ export function Home() {
         fetchData()
         setFetchTodos(true)
     }, [fetchTodos])
-
-    const todoChange = async () => {
-        setFetchTodos(false)
+    
+    const blurLoadingEffect = async (waitTime=400) => {
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+        setBlurTodos(blurMd)
         setShowSpinner(true)
     }
 
+    const todoChange = async () => {
+        await blurLoadingEffect()
+        setFetchTodos(false)
+    }
+
+
     const removeData = async (todo) => {
+        await blurLoadingEffect()
         await Todos.remove(todo)
         setFetchTodos(false)
-        setShowSpinner(true)
     }
 
     const statusChange = async (todo, newStatus) => {
         todo.is_completed = newStatus
-        await Todos.update(todo);
+        await blurLoadingEffect(50)
+        await Todos.update(todo)
+        setFetchTodos(false)
     }
     
     return (
@@ -69,24 +82,24 @@ export function Home() {
                         Você não possui afazeres.
                     </h2>
                     )}
+                    <div className="absolute bottom-8 right-8 md:top-8">
+                        <LogInRedirectButton/>
+                    </div>
                     <div className="fixed bottom-8 left-8 md:top-8 z-[99]">
                         <onTodoAddedContext.Provider value={todoChange}>
                             <NewTodoButton/>
                         </onTodoAddedContext.Provider>
                     </div>
-                    <div>
-                        <LogInRedirectButton/>
-                    </div>
                 {showSpinner && (
-                    <div className="absolute mt-20 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[99]">
-                        <Spinner/>
+                    <div className="fixed top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[99]">
+                        <Spinner />
                     </div>
                 )}
                 <onStatusChangeContext.Provider value={statusChange}>
                     <onTodoEditedContext.Provider value={todoChange}>
                         <onTodoRemoveContext.Provider value={removeData}>
                             {todos && (
-                                <div className="todo mx-2 mb-10 mt-12 grid grid-cols-1 gap-2 md:mx-8 md:grid-cols-2 xl:grid-cols-2">
+                                <div className={`todo ${blurTodos} mx-2 mb-10 mt-12 grid grid-cols-1 gap-2 md:mx-8 md:grid-cols-2 xl:grid-cols-2`}>
                                 {todos.map((todo) => (
                                     <TodoCard 
                                         todo={todo}

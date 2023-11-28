@@ -15,6 +15,7 @@ export function NewTodoButton() {
     const [showModal, setShowModal] = useState(false);
 
     return (
+    <>
       <div>
         {/* <!-- Button trigger modal --> */}
         <TERipple rippleColor="white">
@@ -74,5 +75,6 @@ export function NewTodoButton() {
           </TEModalDialog>
         </TEModal>
       </div>
+    </>
     );
   }

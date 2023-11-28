@@ -19,7 +19,6 @@ export function ToggleSwitch() {
     }
 
     return (
-        
         <div className="mb-5 w-full flex justify-end mt-1">
             <span className="mr-2 text-md font-semibold text-violet-900">Feito</span>
             <label className="todo-toggle-status relative inline-flex items-center cursor-pointer">

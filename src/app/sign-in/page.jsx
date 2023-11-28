@@ -9,6 +9,7 @@ import SingInUpConfirmButton from '@/components/signInUpConfirmButton';
 import SingInUpButtonSpinner from '@/components/signInUpButtonSpinner';
 import SingInUpDisabledButton from '@/components/signInUpDisabledButton';
 import Spinner from '@/components/Spinner';
+import ErrorFieldText from '@/components/errorFieldText';
 
 
 export default function SignIn() {
@@ -22,12 +23,16 @@ export default function SignIn() {
         
       });
 
+      const defaultFieldBg = 'border-violet-200'
+
       const [showInvalidCredentialsAlert, setShowInvalidCredentialsAlert] = useState(false)
       const [showLogInButton, setShowLoginButton] = useState(true);
-      const [showSignUnButton, setShowSignUpButton] = useState(false);
+      const [showSignUpButton, setShowSignUpButton] = useState(false);
       const [showLoadingButton, setShowLoadingButton] = useState(false);
       const [showDisabledConfirm, setShowDisabledConfirm] = useState(false);
       const [showDisableEnter, setShowDisableEnter] = useState(false);
+      const [errorFieldClass, setErrorFieldClass] = useState('border-violet-200')
+      const [emailErrorField, setEmailErrorField] = useState(false)
 
 
       let [formData, setFormData] = useState({
@@ -57,22 +62,29 @@ export default function SignIn() {
     }
 
     async function handleSubmit(event) {
-        setShowInvalidCredentialsAlert(false)
         event.preventDefault()
         let error
+        setShowInvalidCredentialsAlert(false)
         setShowLoginButton(false)
+        setShowSignUpButton(false)
         setShowLoadingButton(true)
-        const isSignUp = formData.name === '' ? false : true
+        const isSignUp = formData.name == '' ? false : true
         if (isSignUp) {
-            // error = passwordsDiff()
-        } 
-        if (isSignUp) {
+           error = checkPasswordsDiff(formData.password, formData.confirmPassword)
+           if (error) {
+            return
+           } else {
             const { data, error } = await signUp(formData)
-            
             if (data) {
-            } else {
                 await generateToken(data)
-            }
+            } else {
+                setErrorFieldClass('border-red-500 bg-red-100')
+                setEmailErrorField(true)
+                setShowLoadingButton(false)
+                setShowDisabledConfirm(true)
+                
+                }
+           }
         } else {
             const { data, error } = await singIn(formData.email, formData.password)
             if (!data) {
@@ -84,6 +96,28 @@ export default function SignIn() {
             }
         }
     }
+
+    function checkPasswordsDiff(password, confirmPassword) {
+        let error = true
+        if (!password || !password) {
+            return error
+        }
+        if (password !== confirmPassword) {
+            return error
+        }
+        error = false
+        return error
+    }
+
+    function handleBlur() {
+        setFormData(() => ({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          password: formData.password.trim(),
+          confirmPassword: formData.confirmPassword.trim(),
+          })
+        )
+      }
 
     async function generateToken(data) {
         const token = await signJWT(data)
@@ -131,7 +165,7 @@ export default function SignIn() {
             </div>
 
             {!fetchedUser && (
-            <div className="mx-auto my-14">
+            <div className="fixed top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[99]">
                     <Spinner size={'14'}/>
                 </div>
             )}
@@ -151,10 +185,11 @@ export default function SignIn() {
                         name="name"
                         type="name"
                         required={true}
-                        value={formData.value}
+                        value={formData.name}
                         onChange={handleChange}
                         maxLength={150}
                         minLength={2}
+                        onBlur={handleBlur}
                         autoComplete="name"
                         className="mt-1 mb-1 w-full py-2.5 px-4 block border text-violet-800 border-violet-200 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
                         />
@@ -173,17 +208,23 @@ export default function SignIn() {
                     id="email"
                     name="email"
                     type="email"
-                    value={formData.value}
+                    value={formData.email}
                     onChange={handleChange}
+                    onBlur={handleBlur}
+                    onFocus={() => {
+                        setErrorFieldClass(defaultFieldBg)
+                        setShowDisabledConfirm(false)
+                        setShowSignUpButton(true)
+                        setEmailErrorField(false)}}
                     autoComplete="email"
-                    className="mt-1 mb-1 w-full py-2.5 px-4 block border text-violet-800 border-violet-200 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                    className={`mt-1 mb-1 w-full py-2.5 px-4 block border text-violet-800 ${errorFieldClass} rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-violet-500`}
                     />
-                    <p
-                    id="email-error-msg"
-                    className="hidden mt-0 text-left text-sm text-red-600"
-                    >
-                    Já existe um usuário cadastrado com esse email.
-                    </p>
+                    {
+                        emailErrorField && (
+                            <ErrorFieldText text={'Já existe um usuário cadastrado com esse email.'}/>
+                        )
+                    }
+   
                 </div>
                 </div>
                 <div id="password-div">
@@ -212,8 +253,11 @@ export default function SignIn() {
                         name="password"
                         maxLength={30}
                         type="password"
-                        value={formData.value}
+                        value={formData.password}
                         onChange={handleChange}
+                        onBlur={() => {
+                            handleBlur()
+                        }}
                         autoComplete="current-password"
                         className="mt-1 mb-1 w-full py-1.5 px-4 block border text-violet-800 border-violet-200 rounded-md text-3xl focus:outline-none focus:ring-2 focus:ring-violet-500"
                         />
@@ -240,8 +284,9 @@ export default function SignIn() {
                             id="confirm-password"
                             name="confirmPassword"
                             type="password"
-                            value={formData.value}
+                            value={formData.confirmPassword}
                             onChange={handleChange}
+                            onBlur={handleBlur}
                             autoComplete="confirm-password"
                             className="mt-1 mb-1 w-full py-1.5 px-4 block border text-violet-800 border-violet-200 rounded-md text-3xl focus:outline-none focus:ring-2 focus:ring-violet-500"
                             />
@@ -287,7 +332,7 @@ export default function SignIn() {
                         buttonTitle={'Entrar'}
                         />)}
 
-                {showSignUnButton && (
+                {showSignUpButton && (
                 <SingInUpConfirmButton 
                     buttonTitle={'Confirmar'}/>
                 )}
