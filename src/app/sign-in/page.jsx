@@ -214,8 +214,10 @@ export default function SignIn() {
                     onFocus={() => {
                         setErrorFieldClass(defaultFieldBg)
                         setShowDisabledConfirm(false)
-                        setShowSignUpButton(true)
-                        setEmailErrorField(false)}}
+                        if (emailErrorField) {
+                            setShowSignUpButton(true)
+                            setEmailErrorField(false)}}
+                        }
                     autoComplete="email"
                     className={`mt-1 mb-1 w-full py-2.5 px-4 block border text-violet-800 ${errorFieldClass} rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-violet-500`}
                     />
