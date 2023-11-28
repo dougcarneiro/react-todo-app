@@ -10,6 +10,7 @@ import { onStatusChangeContext } from "./hooks/OnStatusChangeContext";
 import { onTodoAddedContext } from "./hooks/OnTodoAddedContext";
 import { onTodoEditedContext } from "./hooks/OnTodoEditedContext";
 import { onTodoRemoveContext } from "./hooks/OnTodoRemoveContext";
+import LogInRedirectButton from "@/components/LogInRedirectButton";
 
 
 
@@ -77,13 +78,14 @@ export function Home() {
                             <NewTodoButton/>
                         </onTodoAddedContext.Provider>
                     </div>
-                    
+                    <div>
+                        <LogInRedirectButton/>
+                    </div>
                 {showSpinner && (
                     <div className="absolute mt-20 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[99]">
-                        <Spinner size={'14'}/>
+                        <Spinner/>
                     </div>
                 )}
-                
                 <onStatusChangeContext.Provider value={statusChange}>
                     <onTodoEditedContext.Provider value={todoChange}>
                         <onTodoRemoveContext.Provider value={removeData}>
@@ -100,8 +102,6 @@ export function Home() {
                         </onTodoRemoveContext.Provider>
                     </onTodoEditedContext.Provider>
                 </onStatusChangeContext.Provider>
-                
-
                 </div>
                 
             </div>
