@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react';
 
 import { formatDate } from '@/lib/format';
 
-import StatusToggle from './ToggleSwitch';
+import ToggleSwitch from './ToggleSwitch';
 import { EditTodoButton } from './EditTodoButton';
 import { useState } from 'react';
 import { RemoveModal } from './RemoveModal';
@@ -16,28 +16,12 @@ const background = {
   }
 
 export default function TodoCard({
-    id,
-    title,
-    text,
-    priority,
-    is_completed,
-    date,
-    created_at,
+    todo,
     onSubmit,
     onRemove,
     onStatusChange
 
 }) {
-
-    const todo = {
-        id: id,
-        title: title,
-        text: text,
-        priority: priority,
-        is_completed: is_completed,
-        date: date,
-        created_at: created_at,
-    }
 
     function priorityColor(priority) {
         if (priority == 'light') {
@@ -60,33 +44,32 @@ export default function TodoCard({
     return (
 
     <div
-        className={`shadow-md rounded-lg p-4 relative overflow-y-auto ${priorityColor(priority)}`}
+        className={`shadow-md rounded-lg p-4 relative overflow-y-auto ${priorityColor(todo.priority)}`}
         >
-       {<StatusToggle 
-            is_completed={ is_completed } 
-            id={ id }
+       {<ToggleSwitch 
+            todo={todo}
             onStatusChange={onStatusChange}
             />}
         <div className="flex justify-between items-center">
         <h3 className="todo-title text-lg font-semibold text-gray-700">
-        {title}
+        {todo.title}
         </h3>
         </div>
         <div className="mt-4">
             <p className="text-justify text-lg text-black-500">
             <span className="todo-text">
-                {text}
+                {todo.text}
             </span>
             </p>
             <p className="mt-4 text-sm text-gray-500">
             <span className="font-bold">Data do Afazer: </span>
             <span className="todo-date">
-                {formatDate(date)}
+                {formatDate(todo.date)}
             </span>
             </p>
             <p className="mt-4 text-sm text-gray-500">
             <span className="font-bold">Criado em: </span>
-            <span className="todo-created-at">{formatDate(created_at)}</span>
+            <span className="todo-created-at">{formatDate(todo.created_at)}</span>
             </p>
         </div>
         <div className="absolute bottom-4 right-4 inline-flex">

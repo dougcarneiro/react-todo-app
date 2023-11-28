@@ -121,8 +121,6 @@ async function create(todo, loggedUser=false) {
   } else {
     createdTodo = Storage.create('todos', todo);
   }
-  // TodoCard.create(createdTodo);
-  // await load()
 }
 
 function updateSpinner() {

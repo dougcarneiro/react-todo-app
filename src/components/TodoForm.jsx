@@ -37,6 +37,7 @@ export function TodoForm({ id, title, text, priority, date, created_at, formTitl
     const todo = {
       ...formData,
       created_at: created_at,
+      is_completed: false,
     }
 
     if (id) {

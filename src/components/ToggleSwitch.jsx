@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 
 
-export function StatusToggle({is_completed, id, onStatusChange}) {
-    const [isChecked, setIsChecked] = useState(!!is_completed);
+export function ToggleSwitch({todo, onStatusChange}) {
+    const [isChecked, setIsChecked] = useState(todo.is_completed);
     
     useEffect(() => {
-        setIsChecked(!!is_completed);
-    }, [is_completed]);
+        setIsChecked(!!isChecked);
+    }, [isChecked]);
 
     async function toggleStatus() {
         setIsChecked((prevChecked) => !prevChecked);
-        onStatusChange(id, !isChecked)
+        onStatusChange(todo, !isChecked)
     }
 
     return (
@@ -33,4 +33,4 @@ export function StatusToggle({is_completed, id, onStatusChange}) {
 
     
 
-export default StatusToggle;
+export default ToggleSwitch;
