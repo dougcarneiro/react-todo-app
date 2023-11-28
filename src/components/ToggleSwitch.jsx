@@ -1,7 +1,10 @@
+import { useTodoContext } from '@/app/hooks/TodoContext';
 import { useState, useEffect } from 'react';
 
 
-export function ToggleSwitch({todo, onStatusChange}) {
+export function ToggleSwitch({onStatusChange}) {
+    const todo = useTodoContext()
+
     const [isChecked, setIsChecked] = useState(todo.is_completed);
     
     useEffect(() => {

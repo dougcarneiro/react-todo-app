@@ -1,11 +1,9 @@
-import { Icon } from '@iconify/react';
-
 import { formatDate } from '@/lib/format';
-
 import ToggleSwitch from './ToggleSwitch';
 import { EditTodoButton } from './EditTodoButton';
 import { useState } from 'react';
 import { RemoveModal } from './RemoveModal';
+import { TodoContext } from '@/app/hooks/TodoContext';
 
 
 const background = {
@@ -46,10 +44,13 @@ export default function TodoCard({
     <div
         className={`shadow-md rounded-lg p-4 relative overflow-y-auto ${priorityColor(todo.priority)}`}
         >
-       {<ToggleSwitch 
-            todo={todo}
-            onStatusChange={onStatusChange}
-            />}
+       {
+        <TodoContext.Provider value={todo}>
+            <ToggleSwitch 
+                onStatusChange={onStatusChange}
+                />
+        </TodoContext.Provider>
+        }
         <div className="flex justify-between items-center">
         <h3 className="todo-title text-lg font-semibold text-gray-700">
         {todo.title}
