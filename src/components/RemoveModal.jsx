@@ -1,3 +1,4 @@
+import { useOnTodoRemoveContext } from "@/app/hooks/OnTodoRemoveContext";
 import { Icon } from "@iconify/react";
 import { useState } from "react";
 import {
@@ -10,7 +11,9 @@ import {
   } from "tw-elements-react";
 
   
-export function RemoveModal({todo, onRemove}) {
+export function RemoveModal({todo}) {
+
+    const onRemove = useOnTodoRemoveContext()
 
     const [showModal, setShowModal] = useState(false);
 

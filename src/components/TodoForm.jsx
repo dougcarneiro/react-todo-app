@@ -1,9 +1,15 @@
+import { useOnTodoAddedContext } from '@/app/hooks/OnTodoAddedContext';
+import { useOnTodoEditeContext } from '@/app/hooks/OnTodoEditedContext';
 import { formatDate } from '@/lib/format';
 import Todos from '@/lib/todos';
 import { useState } from 'react';
 
 
-export function TodoForm({ id, title, text, priority, date, created_at, formTitle, onTodoAdded, onSubmit, isCreating }) {
+export function TodoForm({ id, title, text, priority, date, created_at, formTitle, isCreating, onCreate }) {
+
+  const onTodoAdded = useOnTodoAddedContext()
+
+  const onTodoEdited = useOnTodoEditeContext()
 
   const [formData, setFormData] = useState({
     title: title || '',
@@ -56,11 +62,12 @@ export function TodoForm({ id, title, text, priority, date, created_at, formTitl
       console.error('Erro durante a execução assíncrona:', error);
     }
 
-    if (onSubmit) {
-      onSubmit()
+    if (onTodoEdited) {
+      onTodoEdited()
     }      
 
     if (onTodoAdded) {
+      onCreate()
       onTodoAdded();
       setFormData({
         title: '',

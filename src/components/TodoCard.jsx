@@ -1,7 +1,6 @@
 import { formatDate } from '@/lib/format';
 import ToggleSwitch from './ToggleSwitch';
 import { EditTodoButton } from './EditTodoButton';
-import { useState } from 'react';
 import { RemoveModal } from './RemoveModal';
 import { TodoContext } from '@/app/hooks/TodoContext';
 
@@ -13,12 +12,7 @@ const background = {
     high: 'bg-red-200'
   }
 
-export default function TodoCard({
-    todo,
-    onSubmit,
-    onRemove,
-
-}) {
+export default function TodoCard({todo}) {
 
     function priorityColor(priority) {
         if (priority == 'light') {
@@ -30,12 +24,6 @@ export default function TodoCard({
           } else {
             return background.normal
           }
-    }
-       
-    const [editingTodo, setEditingTodo] = useState(null);
-
-    function handleUpdateTodo() {
-        setEditingTodo(todo)
     }
 
     return (
@@ -72,10 +60,10 @@ export default function TodoCard({
         </div>
         <div className="absolute bottom-4 right-4 inline-flex">
             <span className='mx-0.5'>
-                <RemoveModal todo={todo} onRemove={onRemove} />
+                <RemoveModal todo={todo}/>
             </span>
             <span className='mx-0.5'>
-                <EditTodoButton todo={todo} editTodoClick={handleUpdateTodo} onSubmit={onSubmit} />
+                <EditTodoButton todo={todo} />
             </span>
         </div>
     </div>

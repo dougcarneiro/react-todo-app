@@ -11,20 +11,9 @@ import {
 } from "tw-elements-react";
 
 
-export function EditTodoButton({ todo, editTodoClick, onSubmit}) {
+export function EditTodoButton({ todo}) {
+
     const [showModal, setShowModal] = useState(false);
-
-    const handleEditTodoClick = () => {
-      // Chame a função onClick passando o objeto todo
-      editTodoClick(todo);
-      setShowModal(true);
-    };
-
-    const handleSubmit = async () => {
-      onSubmit()
-      setShowModal(false)
-
-    };
 
     return (
       <div>
@@ -33,7 +22,7 @@ export function EditTodoButton({ todo, editTodoClick, onSubmit}) {
         <button
           type="button"
           className="text-gray-400 hover:text-gray-700 cursor-pointer"
-            onClick={handleEditTodoClick}
+            onClick={() => setShowModal(true)}
           >
           <Icon icon="tabler:pencil"/>
         </button>
@@ -77,7 +66,7 @@ export function EditTodoButton({ todo, editTodoClick, onSubmit}) {
                 <TodoForm {...todo}
                   onCancel={() => setShowModal(false)}
                   formTitle={'Alterar Afazer'}
-                  onSubmit={handleSubmit}
+                  onSubmit={() => setShowModal(false)}
                   isCreating={false}
                   />
                 </TEModalBody>
