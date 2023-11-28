@@ -5,7 +5,7 @@ import Spinner from "@/components/Spinner";
 import TodoCard from "@/components/TodoCard";
 import Todos from "@/lib/todos";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { onStatusChangeContext } from "./hooks/OnStatusChangeContext";
 import { onTodoAddedContext } from "./hooks/OnTodoAddedContext";
 import { onTodoEditedContext } from "./hooks/OnTodoEditedContext";
@@ -17,16 +17,22 @@ export function Home() {
     
     const [todos, setTodos] = useState(null);
     const [todosFetched, setTodosFetched] = useState(false);
+    const [showSpinner, setShowSpinner] = useState(true)
 
     const fetchData = async () => {
             try {
                 const fetchedTodos = await Todos.load()
                 setTodos(fetchedTodos)
                 setTodosFetched(true)
+                setShowSpinner(false)
             } catch (error) {
                 console.error('Erro ao buscar dados:', error);
             }
         }
+
+    useEffect(() => {
+        fetchData()
+    }, [todos])
 
     if (!todosFetched) {
         Todos.loadStorage()
@@ -35,13 +41,13 @@ export function Home() {
 
     const todoChange = async () => {
         setTodos(null)
-        fetchData()
+        setShowSpinner(true)
     }
 
     const removeData = async (todo) => {
         await Todos.remove(todo)
         setTodos(null)
-        fetchData()
+        setShowSpinner(true)
     }
 
     const statusChange = async (todo, newStatus) => {
@@ -72,8 +78,8 @@ export function Home() {
                         </onTodoAddedContext.Provider>
                     </div>
                     
-                {!todos && (
-                    <div className="absolute mt-20 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                {showSpinner && (
+                    <div className="absolute mt-20 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[99]">
                         <Spinner size={'14'}/>
                     </div>
                 )}
