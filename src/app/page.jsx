@@ -11,6 +11,7 @@ import { onTodoAddedContext } from "./hooks/OnTodoAddedContext";
 import { onTodoEditedContext } from "./hooks/OnTodoEditedContext";
 import { onTodoRemoveContext } from "./hooks/OnTodoRemoveContext";
 import LogInRedirectButton from "@/components/LogInRedirectButton";
+import Profile from "@/components/Profile";
 
 
 
@@ -84,6 +85,7 @@ export function Home() {
                     )}
                     <div className="absolute bottom-8 right-8 md:top-8">
                         <LogInRedirectButton/>
+                        <Profile/>
                     </div>
                     <div className="fixed bottom-8 left-8 md:top-8 z-[99]">
                         <onTodoAddedContext.Provider value={todoChange}>
