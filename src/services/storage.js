@@ -6,12 +6,12 @@ function storageInsert(key, value) {
     value = JSON.stringify(value);
   }
 
-  localStorage.setItem(`@todo-app:${key}`, value);
+  window.localStorage.setItem(`@todo-app:${key}`, value);
 }
 
 function storageSelect(key, isJSON = true) {
   let value
-  value = localStorage.getItem(`@todo-app:${key}`);
+  value = window.localStorage.getItem(`@todo-app:${key}`);
   if (value && isJSON) {
     value = JSON.parse(value);
   }
@@ -89,14 +89,14 @@ function remove(resource, id) {
 }
 
 async function getUserByJWT() {
-  const jwt = localStorage.getItem('@todo-app:jwt')
+  const jwt = window.localStorage.getItem('@todo-app:jwt')
   if (jwt) {
     const payload = await decodeJWT(jwt)
     if (payload.user) {
       return payload.user[0]
     }
   }
-  localStorage.removeItem('@todo-app:jwt')
+  window.localStorage.removeItem('@todo-app:jwt')
   return false
 }
 
