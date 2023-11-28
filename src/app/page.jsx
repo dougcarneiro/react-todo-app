@@ -83,7 +83,7 @@ export function Home() {
                         Você não possui afazeres.
                     </h2>
                     )}
-                    <div className="absolute bottom-8 right-8 md:top-8">
+                    <div className="absolute top-8 right-8">
                         <LogInRedirectButton/>
                         <Profile/>
                     </div>
@@ -93,7 +93,7 @@ export function Home() {
                         </onTodoAddedContext.Provider>
                     </div>
                 {showSpinner && (
-                    <div className="fixed top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[99]">
+                    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[99]">
                         <Spinner />
                     </div>
                 )}

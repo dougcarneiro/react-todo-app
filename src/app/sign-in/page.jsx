@@ -1,6 +1,5 @@
 'use client';
 
-
 import React, { useState, useEffect } from 'react';
 import { signUp, singIn } from '@/services/supabase';
 import { signJWT } from '@/services/jwt';
@@ -9,7 +8,7 @@ import SingInUpConfirmButton from '@/components/signInUpConfirmButton';
 import SingInUpButtonSpinner from '@/components/signInUpButtonSpinner';
 import SingInUpDisabledButton from '@/components/signInUpDisabledButton';
 import Spinner from '@/components/Spinner';
-import ErrorFieldText from '@/components/errorFieldText';
+import ErrorFieldText from '@/components/ErrorFieldText';
 
 
 export default function SignIn() {

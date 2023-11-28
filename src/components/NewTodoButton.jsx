@@ -24,7 +24,7 @@ export function NewTodoButton() {
           className="new-todo-btn inline-flex py-2 px-2 justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-violet-500 text-white hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition-all text-sm md:py-3 md:px-4"
             onClick={() => setShowModal(true)}
           >
-          <Icon icon="pajamas:todo-add" className="text-violet-200 text-xl"/>
+          <Icon icon="pajamas:todo-add" className="text-violet-200 text-2xl"/>
           <span className="font-montserrat hidden lg:block">Novo Afazer</span> 
           </button>
         </TERipple>

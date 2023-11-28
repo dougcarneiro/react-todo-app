@@ -8,7 +8,7 @@ export default function Profile() {
         <div id="profile-drawer">
             <div
                 id="hs-overlay-right"
-                className="font-montserrat hs-overlay hs-overlay-open:translate-x-0 hidden translate-x-full fixed top-0 end-0 transition-all duration-300 transform h-full max-w-xs w-full w-full z-[60] bg-white border-s dark:bg-violet-800 dark:border-violet-700 hidden"
+                className="font-montserrat hs-overlay hs-overlay-open:translate-x-0 hidden overflow-y-auto translate-x-full fixed top-0 end-0 transition-all duration-300 transform h-full max-w-xs w-full w-full z-[60] bg-white border-s dark:bg-violet-800 dark:border-violet-700 hidden"
                 tabIndex={-1}
             >
                 <div className="flex justify-between items-center py-3 px-4 border-b dark:border-violet-700">
@@ -105,7 +105,7 @@ export default function Profile() {
                     </dl>
                 </div>
                 </div>
-                <div className="fixed bottom-8 mx-14">
+                <div className="m-5">
                 <button
                     id="logout-button"
                     type="button"
