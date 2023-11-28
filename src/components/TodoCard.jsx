@@ -17,7 +17,6 @@ export default function TodoCard({
     todo,
     onSubmit,
     onRemove,
-    onStatusChange
 
 }) {
 
@@ -46,9 +45,7 @@ export default function TodoCard({
         >
        {
         <TodoContext.Provider value={todo}>
-            <ToggleSwitch 
-                onStatusChange={onStatusChange}
-                />
+            <ToggleSwitch />
         </TodoContext.Provider>
         }
         <div className="flex justify-between items-center">

@@ -6,6 +6,7 @@ import TodoCard from "@/components/TodoCard";
 import Todos from "@/lib/todos";
 
 import { useState, useEffect } from 'react';
+import { onStatusChangeContext } from "./hooks/OnStatusChangeContext";
 
 
 export function Home() {
@@ -70,19 +71,23 @@ export function Home() {
                         <Spinner size={'14'}/>
                     </div>
                 )}
-                {todos && (
-                    <div className="todo mx-2 mb-10 mt-12 grid grid-cols-1 gap-2 md:mx-8 md:grid-cols-2 xl:grid-cols-2">
-                    {todos.map((todo) => (
-                        <TodoCard 
-                            todo={todo}
-                            key={todo.id} 
-                            onSubmit={todoChange} 
-                            onRemove={removeData}
-                            onStatusChange={statusChange}
-                            />
-                    ))}
-                    </div>
-                )}
+                
+                <onStatusChangeContext.Provider value={statusChange}>
+                    {todos && (
+                        <div className="todo mx-2 mb-10 mt-12 grid grid-cols-1 gap-2 md:mx-8 md:grid-cols-2 xl:grid-cols-2">
+                        {todos.map((todo) => (
+                            <TodoCard 
+                                todo={todo}
+                                key={todo.id} 
+                                onSubmit={todoChange} 
+                                onRemove={removeData}
+                                />
+                        ))}
+                        </div>
+                    )}
+                </onStatusChangeContext.Provider>
+                
+
                 </div>
                 
             </div>
