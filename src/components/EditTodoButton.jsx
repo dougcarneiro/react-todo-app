@@ -66,7 +66,7 @@ export function EditTodoButton({ todo}) {
                 <TodoForm {...todo}
                   onCancel={() => setShowModal(false)}
                   formTitle={'Alterar Afazer'}
-                  onSubmit={() => setShowModal(false)}
+                  onEdit={() => setShowModal(false)}
                   isCreating={false}
                   />
                 </TEModalBody>

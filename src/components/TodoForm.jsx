@@ -5,7 +5,17 @@ import Todos from '@/lib/todos';
 import { useState } from 'react';
 
 
-export function TodoForm({ id, title, text, priority, date, created_at, formTitle, isCreating, onCreate }) {
+export function TodoForm(
+  { id, 
+    title, 
+    text, 
+    priority, 
+    date, 
+    created_at, 
+    formTitle, 
+    isCreating, 
+    onCreate, 
+    onEdit }) {
 
   const onTodoAdded = useOnTodoAddedContext()
 
@@ -63,6 +73,7 @@ export function TodoForm({ id, title, text, priority, date, created_at, formTitl
     }
 
     if (onTodoEdited) {
+      onEdit()
       onTodoEdited()
     }      
 

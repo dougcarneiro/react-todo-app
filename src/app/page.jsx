@@ -17,14 +17,13 @@ import LogInRedirectButton from "@/components/LogInRedirectButton";
 export function Home() {
     
     const [todos, setTodos] = useState(null);
-    const [todosFetched, setTodosFetched] = useState(false);
+    const [fetchTodos, setFetchTodos] = useState(true);
     const [showSpinner, setShowSpinner] = useState(true)
 
     const fetchData = async () => {
             try {
                 const fetchedTodos = await Todos.load()
                 setTodos(fetchedTodos)
-                setTodosFetched(true)
                 setShowSpinner(false)
             } catch (error) {
                 console.error('Erro ao buscar dados:', error);
@@ -32,22 +31,19 @@ export function Home() {
         }
 
     useEffect(() => {
-        fetchData()
-    }, [todos])
-
-    if (!todosFetched) {
         Todos.loadStorage()
         fetchData()
-    }
+        setFetchTodos(true)
+    }, [fetchTodos])
 
     const todoChange = async () => {
-        setTodos(null)
+        setFetchTodos(false)
         setShowSpinner(true)
     }
 
     const removeData = async (todo) => {
         await Todos.remove(todo)
-        setTodos(null)
+        setFetchTodos(false)
         setShowSpinner(true)
     }
 
