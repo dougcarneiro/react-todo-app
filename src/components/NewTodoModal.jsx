@@ -5,7 +5,7 @@ import { TodoForm } from './TodoForm';
 import { useState } from 'react';
 
 
-export default function NewTodoButton() {
+export default function NewTodoModal() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -30,14 +30,14 @@ export default function NewTodoButton() {
           style: { backdropFilter: 'blur(4px)' },
       }}
       >
-        <Box className="w-1/3 mt-10 mx-auto my-auto bg-white font-montserrat border shadow-sm rounded-xl">
+        <Box className="max-w-md mt-10 mx-auto my-auto bg-white font-montserrat border shadow-sm rounded-xl">
         <div className="flex flex-col bg-white border-none shadow-sm rounded-xl">
             <div className="flex justify-between items-center py-3 px-4 border-b ">
                 <h3 className="font-satisfy font-bold text-xl text-violet-800">Tásku</h3>
                 <button
                 type="button"
                 onClick={handleClose}
-                className="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-md text-violet-500 hover:text-violet-400 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white transition-all text-sm"
+                className="inline-flex flex-shrisnk-0 justify-center items-center h-8 w-8 rounded-md text-violet-500 hover:text-violet-400 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white transition-all text-sm"
                 >
                 <span className="sr-only">Close</span>
                 <svg

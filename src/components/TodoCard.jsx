@@ -1,7 +1,7 @@
 import { formatDate } from '@/lib/format';
 import ToggleSwitch from './ToggleSwitch';
 import { TodoContext } from '@/app/hooks/TodoContext';
-import EditTodoButton from './EditTodoButton';
+import EditTodoModal from './EditTodoModal';
 import RemoveModal from './RemoveModal';
 
 
@@ -64,7 +64,7 @@ export default function TodoCard({todo}) {
                     <RemoveModal todo={todo}/>
                 </span>
                 <span className='mx-0.5'>
-                    <EditTodoButton todo={todo} />
+                    <EditTodoModal todo={todo} />
                 </span>
             </div>
         </div>
