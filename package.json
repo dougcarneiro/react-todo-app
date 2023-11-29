@@ -1,6 +1,7 @@
 {
   "name": "todo-app",
   "version": "0.1.0",
+  "homepage": "https://dougcarneiro.github.io/react-todo-app",
   "engines": {
     "node": "18.x"
   },
