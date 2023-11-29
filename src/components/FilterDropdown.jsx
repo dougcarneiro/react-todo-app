@@ -59,7 +59,7 @@ export default function FilterDropdown({options, checkBoxChange}) {
             onClose={handleClose}
             BackdropProps={{ invisible: true }}
         >
-            <Box className="max-w-fit absolute top-16 right-1/4 my-4 md:left-1/4 lg:left-1/3">
+            <Box className="max-w-fit absolute top-16 right-1/4 my-3 mx-[1rem] md:top-16 md:my-4 md:left-1/4 md:mx-[2.3rem] lg:mx-[-4rem] lg:left-1/3">
             <div
                 id="search-filter-checkbox"
                 className=" z-[50] min-w-[15rem] bg-white shadow-md rounded-lg p-2 mt-2"
