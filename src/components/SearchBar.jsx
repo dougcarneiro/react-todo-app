@@ -4,15 +4,6 @@ import FilterDropdown from "./FilterDropdown";
 
 export default function SearchBar({onSearch, options}) {
 
-    // const options = {title: '',
-    //                        notDone: false,
-    //                        done: false,
-    //                        high: false,
-    //                        medium: false,
-    //                        light: false,
-    //                        normal: false,
-    //                        isSearching: true}
-
     const [searchString, setSearchString] = useState('')
     const [searchOptions, setOptions] = useState(options)
 
@@ -31,6 +22,13 @@ export default function SearchBar({onSearch, options}) {
         }))
     }
 
+    const checkBoxChange = (filterOptions) => {
+        setOptions({
+            ...filterOptions,
+            title: searchOptions.title
+        })
+    }
+
     useEffect(() => {
         setOptions((prevData) => ({
             ...prevData,
@@ -47,7 +45,7 @@ export default function SearchBar({onSearch, options}) {
     <>
         <div
             className="flex items-center justify-center mx-4 w-auto md:mx-0">
-            <FilterDropdown options={searchOptions} onSearch={onSearch}/>
+            <FilterDropdown options={searchOptions} checkBoxChange={checkBoxChange}/>
             <form
                 id="search-bar"
                 onSubmit={handleSubmit}

@@ -39,10 +39,9 @@ export function Home() {
     const fetchData = async (searchOptions) => {
             try {
                 const fetchedTodos = await Todos.load(searchOptions)
-                setBlurTodos('')
                 setTodos(fetchedTodos)
+                setBlurTodos('')
                 setShowSpinner(false)
-                setSearchOptions(defaultSearch)
             } catch (error) {
                 console.error('Erro ao buscar dados:', error);
             }
@@ -83,8 +82,8 @@ export function Home() {
 
     const onSearch = async (options) => {
         blurLoadingEffect()
-        setFetchTodos(false)
         setSearchOptions(options)
+        setFetchTodos(false)
     }
 
     useEffect(() => {
@@ -95,55 +94,52 @@ export function Home() {
     
     return (
         <> 
-            <div id="search-bar">
-                <SearchBar onSearch={onSearch} options={defaultSearch}/>
-                <div className="container mt-12 font-montserrat mx-auto lg:max-w-screen-lg mb-20 md:mt-0">
-                    <a href="/">
-                        <h1 className="text-center text-8xl mt-6 font-medium font-satisfy text-violet-800 drop-shadow-lg md:text-9xl">
-                            Tásku
-                        </h1>
-                        <h2 className="text-center text-2xl mt-6 italic font-medium font-satisfy text-violet-600 drop-shadow-lg md:text-3xl">
-                            A melhor forma de organizar seus afazeres
-                        </h2>
-                    </a>
-                    {todos && todos.length == 0 && (
-                    <h2 className="text-center text-2xl my-12 font-bold text-violet-900">
-                        Você não possui afazeres.
-                    </h2>
-                    )}
-                    <div className="fixed bottom-8 right-8 z-[99] md:absolute md:top-8 md:right-8 md:z-[50]">
-                        {user && (<Profile user={user}/>)}
-                        {!user && (<LogInRedirectButton/>)}
-                    </div>
-                    <div className="fixed bottom-8 left-8 md:top-8 z-[99]">
-                        <onTodoAddedContext.Provider value={todoChange}>
-                            <NewTodoModal/>
-                        </onTodoAddedContext.Provider>
-                    </div>
-                {showSpinner && (
-                    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[99]">
-                        <Spinner/>
-                    </div>
-                )}
-                <onStatusChangeContext.Provider value={statusChange}>
-                    <onTodoEditedContext.Provider value={todoChange}>
-                        <onTodoRemoveContext.Provider value={removeData}>
-                            {todos && (
-                                <div className={`todo ${blurTodos} mx-2 mb-10 mt-12 grid grid-cols-1 gap-2 md:mx-8 md:grid-cols-2 xl:grid-cols-2`}>
-                                {todos.map((todo) => (
-                                    <TodoCard 
-                                        todo={todo}
-                                        key={todo.id} 
-                                        />
-                                ))}
-                                </div>
-                            )}
-                        </onTodoRemoveContext.Provider>
-                    </onTodoEditedContext.Provider>
-                </onStatusChangeContext.Provider>
-                </div>
-                
+        <SearchBar onSearch={onSearch} options={defaultSearch}/>
+        <div className="container mt-12 font-montserrat mx-auto lg:max-w-screen-lg mb-20 md:mt-0">
+            <a href="/">
+                <h1 className="text-center text-8xl mt-6 font-medium font-satisfy text-violet-800 drop-shadow-lg md:text-9xl">
+                    Tásku
+                </h1>
+                <h2 className="text-center text-2xl mt-6 italic font-medium font-satisfy text-violet-600 drop-shadow-lg md:text-3xl">
+                    A melhor forma de organizar seus afazeres
+                </h2>
+            </a>
+            {todos && todos.length == 0 && (
+            <h2 className="text-center text-2xl my-12 font-bold text-violet-900">
+                Você não possui afazeres.
+            </h2>
+            )}
+            <div className="fixed bottom-8 right-8 z-[99] md:absolute md:top-8 md:right-8 md:z-[50]">
+                {user && (<Profile user={user}/>)}
+                {!user && (<LogInRedirectButton/>)}
             </div>
+            <div className="fixed bottom-8 left-8 md:top-8 z-[99]">
+                <onTodoAddedContext.Provider value={todoChange}>
+                    <NewTodoModal/>
+                </onTodoAddedContext.Provider>
+            </div>
+        {showSpinner && (
+            <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[99]">
+                <Spinner/>
+            </div>
+        )}
+        <onStatusChangeContext.Provider value={statusChange}>
+            <onTodoEditedContext.Provider value={todoChange}>
+                <onTodoRemoveContext.Provider value={removeData}>
+                    {todos && (
+                        <div className={`todo ${blurTodos} mx-2 mb-10 mt-12 grid grid-cols-1 gap-2 md:mx-8 md:grid-cols-2 xl:grid-cols-2`}>
+                        {todos.map((todo) => (
+                            <TodoCard 
+                                todo={todo}
+                                key={todo.id} 
+                                />
+                        ))}
+                        </div>
+                    )}
+                </onTodoRemoveContext.Provider>
+            </onTodoEditedContext.Provider>
+        </onStatusChangeContext.Provider>
+        </div>
         </>
 
     )

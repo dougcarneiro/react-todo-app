@@ -4,7 +4,7 @@ import { Icon } from '@iconify/react';
 import { useState, useEffect } from 'react';
 
 
-export default function FilterDropdown({options, onSearch}) {
+export default function FilterDropdown({options, checkBoxChange}) {
 
     const [filterOptions, setOptions] = useState(options)
 
@@ -24,7 +24,7 @@ export default function FilterDropdown({options, onSearch}) {
     }
 
     useEffect(() => {
-        onSearch(filterOptions)
+        checkBoxChange(filterOptions)
     }, [filterOptions])
     
 
@@ -62,7 +62,6 @@ export default function FilterDropdown({options, onSearch}) {
             <Box className="max-w-fit absolute top-16 right-1/4 my-4 md:left-1/4 lg:left-1/3">
             <div
                 id="search-filter-checkbox"
-                // onChange={handleChange}
                 className=" z-[50] min-w-[15rem] bg-white shadow-md rounded-lg p-2 mt-2"
                 >
                 <span className="block text-sm text-left m-2 italic font-semibold text-violet-400">
