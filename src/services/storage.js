@@ -100,7 +100,6 @@ async function getUserByJWT() {
       }
     }
   }
-  window.localStorage.removeItem('@todo-app:jwt')
   return false
 }
 
