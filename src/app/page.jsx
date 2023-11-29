@@ -57,12 +57,6 @@ export function Home() {
     fetchUser()
 
     }, [])
-
-    useEffect(() => {
-        Todos.loadStorage()
-        fetchData(searchOptions)
-        setFetchTodos(true)
-    }, [fetchTodos])
     
     const blurLoadingEffect = () => {
         setBlurTodos(blurMd)
@@ -88,17 +82,21 @@ export function Home() {
     }
 
     const onSearch = async (options) => {
-        console.log(options)
         blurLoadingEffect()
         setFetchTodos(false)
         setSearchOptions(options)
-
     }
+
+    useEffect(() => {
+        Todos.loadStorage()
+        fetchData(searchOptions)
+        setFetchTodos(true)
+    }, [fetchTodos])
     
     return (
         <> 
             <div id="search-bar">
-                <SearchBar onSearch={onSearch}/>
+                <SearchBar onSearch={onSearch} options={defaultSearch}/>
                 <div className="container mt-12 font-montserrat mx-auto lg:max-w-screen-lg mb-20 md:mt-0">
                     <a href="/">
                         <h1 className="text-center text-8xl mt-6 font-medium font-satisfy text-violet-800 drop-shadow-lg md:text-9xl">

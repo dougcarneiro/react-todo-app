@@ -1,35 +1,53 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import FilterDropdown from "./FilterDropdown";
 
 
-export default function SearchBar({onSearch}) {
+export default function SearchBar({onSearch, options}) {
 
-    const options = {title: null,
-                           notDone: false,
-                           done: false,
-                           high: false,
-                           medium: false,
-                           light: false,
-                           normal: false,
-                           isSearching: true}
+    // const options = {title: '',
+    //                        notDone: false,
+    //                        done: false,
+    //                        high: false,
+    //                        medium: false,
+    //                        light: false,
+    //                        normal: false,
+    //                        isSearching: true}
 
     const [searchString, setSearchString] = useState('')
+    const [searchOptions, setOptions] = useState(options)
+
+
 
     const handleSubmit = (e) => {
-        options.title = searchString
         e.preventDefault()
-        onSearch(options)
+        onSearch(searchOptions)
 
     }
 
     const handleChange = (e) => {
-        setSearchString(e.target.value)
-        handleSubmit(e)
+        setOptions((prevData) => ({
+            ...prevData,
+            title: e.target.value
+        }))
     }
+
+    useEffect(() => {
+        setOptions((prevData) => ({
+            ...prevData,
+            isSearching: true
+        }))
+    }, [])
+
+    useEffect(() => {
+        onSearch(searchOptions)
+    }, [searchOptions])
+
+
     return (
     <>
         <div
             className="flex items-center justify-center mx-4 w-auto md:mx-0">
-                {/* dropdown */}
+            <FilterDropdown options={searchOptions} onSearch={onSearch}/>
             <form
                 id="search-bar"
                 onSubmit={handleSubmit}
@@ -43,7 +61,7 @@ export default function SearchBar({onSearch}) {
                         className="bg-white border-none rounded-md text-violet-900 text-sm hover:outline-none hover:ring-2 hover:ring-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 block w-full pl-10 p-2.5 placeholder-violet-500 md:text-lg"
                         placeholder="Busque por um afazer..."
                         required={false}
-                        value={searchString}
+                        value={searchString.value}
                         onChange={handleChange}
                         onBlur={() => setSearchString(searchString.trim())}
                     />

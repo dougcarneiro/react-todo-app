@@ -7,7 +7,7 @@ export function ToggleSwitch() {
     const todo = useTodoContext()
     const onStatusChange = useOnStatusChangeContext()
 
-    const [isChecked, setIsChecked] = useState(todo.is_completed);
+    const [isChecked, setIsChecked] = useState(todo.is_completed ? todo.is_completed : false);
     
     useEffect(() => {
         setIsChecked(!!isChecked);
