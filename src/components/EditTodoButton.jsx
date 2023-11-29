@@ -14,7 +14,8 @@ export default function EditTodoButton({ todo }) {
     <div>
         <button
           type="button"
-          className="text-gray-400 hover:text-gray-700 cursor-pointer"          onClick={handleOpen}
+          className="text-gray-400 hover:text-gray-700 cursor-pointer"
+          onClick={handleOpen}
           >
           <Icon icon="tabler:pencil"/>
           </button>
@@ -23,6 +24,9 @@ export default function EditTodoButton({ todo }) {
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        BackdropProps={{
+          style: { backdropFilter: 'blur(4px)' },
+      }}
       >
         <Box className="w-1/3 mt-10 mx-auto my-auto bg-white font-montserrat border shadow-sm rounded-xl">
         <div className="flex flex-col bg-white border-none shadow-sm rounded-xl">

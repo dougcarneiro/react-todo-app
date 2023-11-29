@@ -52,8 +52,7 @@ export function Home() {
         setFetchTodos(true)
     }, [fetchTodos])
     
-    const blurLoadingEffect = async (waitTime=0) => {
-        await new Promise(resolve => setTimeout(resolve, waitTime));
+    const blurLoadingEffect = async () => {
         setBlurTodos(blurMd)
         setShowSpinner(true)
     }
@@ -72,7 +71,7 @@ export function Home() {
 
     const statusChange = async (todo, newStatus) => {
         todo.is_completed = newStatus
-        await blurLoadingEffect(0)
+        await blurLoadingEffect()
         await Todos.update(todo)
         setFetchTodos(false)
     }
@@ -94,7 +93,7 @@ export function Home() {
                         Você não possui afazeres.
                     </h2>
                     )}
-                    <div className="fixed bottom-8 right-8 z-[99] md:absolute md:top-8">
+                    <div className="absolute top-8 right-8">
                         {user && (<Profile user={user}/>)}
                         {!user && (<LogInRedirectButton/>)}
                     </div>

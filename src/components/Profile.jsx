@@ -16,6 +16,8 @@ export default function Profile({user}) {
     const [completedTodos, setCompletedTodos] = useState(null)
     const [unCompletedTodos, setUncompletedTodos] = useState(null)
     const [userFirstName, setUserFirstName] = useState(null)
+    const [userCreatedAt, setUserCreatedAt] = useState(null)
+    const [userName, setUserName] = useState(null)
     
     const [drawerState, setDrawerState] = useState(false);
     const [blurProfile, setBlurProfile] = useState('')
@@ -33,8 +35,8 @@ export default function Profile({user}) {
         setCompletedTodos(fetchCompletedTodos)
         setUncompletedTodos(fetchUncompletedTodos)
         setUserFirstName(user.name.split(' ')[0])
-        user.name = user.name.toLowerCase().split(' ').map((x) => x[0].toUpperCase() + x.slice(1)).join(' ')
-        user.created_at = formatDate(user.created_at)
+        setUserCreatedAt(formatDate(user.created_at))
+        setUserName(user.name.toLowerCase().split(' ').map((x) => x[0].toUpperCase() + x.slice(1)).join(' '))
         setBlurProfile('')
         setShowSpinner(false)
             
@@ -123,7 +125,7 @@ export default function Profile({user}) {
                         <dd
                         id="profile-user-name"
                         className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
-                        >{user.name}</dd>
+                        >{userName}</dd>
                     </div>
                     <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                         <dt className="text-sm font-medium text-violet-500">Email</dt>
@@ -166,7 +168,7 @@ export default function Profile({user}) {
                         <dd
                         id="profile-created-at"
                         className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
-                        >{user.created_at}</dd>
+                        >{userCreatedAt}</dd>
                     </div>
                     </dl>
                 </div>
@@ -197,9 +199,13 @@ export default function Profile({user}) {
                     onClick={toggleDrawer(true)}>
                 </ProfileButton>
             <Drawer
+            
                 anchor={'right'}
                 open={drawerState}
                 onClose={toggleDrawer(false)}
+                BackdropProps={{
+                    style: { backdropFilter: 'blur(4px)' },
+                }}
             >
                 {list('right')}
             </Drawer>

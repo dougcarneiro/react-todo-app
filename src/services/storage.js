@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { decodeJWT } from './jwt';
+import { getProfileById } from './supabase/supabase';
 
 function storageInsert(key, value) {
   if (typeof value === 'object') {
@@ -93,7 +94,10 @@ async function getUserByJWT() {
   if (jwt) {
     const payload = await decodeJWT(jwt)
     if (payload.user) {
-      return payload.user[0]
+      const { data, error} = await getProfileById(payload.user[0].id)
+      if (data) {
+        return data[0]
+      }
     }
   }
   window.localStorage.removeItem('@todo-app:jwt')

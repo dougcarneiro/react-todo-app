@@ -26,6 +26,9 @@ export default function NewTodoButton() {
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        BackdropProps={{
+          style: { backdropFilter: 'blur(4px)' },
+      }}
       >
         <Box className="w-1/3 mt-10 mx-auto my-auto bg-white font-montserrat border shadow-sm rounded-xl">
         <div className="flex flex-col bg-white border-none shadow-sm rounded-xl">
