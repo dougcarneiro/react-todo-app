@@ -1,8 +1,8 @@
 import { formatDate } from '@/lib/format';
 import ToggleSwitch from './ToggleSwitch';
-import { EditTodoButton } from './EditTodoButton';
 import { RemoveModal } from './RemoveModal';
 import { TodoContext } from '@/app/hooks/TodoContext';
+import EditTodoButton from './EditTodoButton';
 
 
 const background = {

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { signUp, singIn } from '@/services/supabase';
+import { signUp, singIn } from '@/services/supabase/supabase';
 import { signJWT } from '@/services/jwt';
 import Storage from '@/services/storage';
 import SingInUpConfirmButton from '@/components/signInUpConfirmButton';
@@ -164,8 +164,8 @@ export default function SignIn() {
             </div>
 
             {!fetchedUser && (
-            <div className="fixed top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[99]">
-                    <Spinner size={'14'}/>
+            <div className="mt-14 fixed top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[99]">
+                    <Spinner/>
                 </div>
             )}
             

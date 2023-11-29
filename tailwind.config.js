@@ -4,8 +4,6 @@ module.exports = {
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-    'node_modules/preline/dist/*.js',
-    './node_modules/tw-elements-react/dist/js/**/*.js'
   ],
   theme: {
     extend: {
@@ -26,5 +24,5 @@ module.exports = {
     },
   },
   darkMode: "class",
-  plugins: [require('preline/plugin'), require('@tailwindcss/forms'), require("tw-elements-react/dist/plugin.cjs")],
+  plugins: [require('@tailwindcss/forms')],
 }

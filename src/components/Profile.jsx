@@ -1,16 +1,83 @@
-import "preline";
+'use client';
 
-import ProfileButton from "./ProfileButton";
+import { useState, Fragment, useEffect } from 'react';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import ProfileButton from './ProfileButton';
+import { Icon } from '@iconify/react';
+import { getTodosCountByProfileId } from '@/services/supabase/supabase';
+import { formatDate } from '@/lib/format';
+import Spinner from './Spinner';
 
-export default function Profile() {
-    return (
-    <>
-        <div id="profile-drawer">
+
+export default function Profile({user}) {
+
+    const [createdTodos, setCreatedTodos] = useState(null)
+    const [completedTodos, setCompletedTodos] = useState(null)
+    const [unCompletedTodos, setUncompletedTodos] = useState(null)
+    const [userFirstName, setUserFirstName] = useState(null)
+    
+    const [drawerState, setDrawerState] = useState(false);
+    const [blurProfile, setBlurProfile] = useState('')
+    const [showSpinner, setShowSpinner] = useState(true)
+
+    const blurMd = 'blur-md'
+
+    const fetchData = async () => {
+        setShowSpinner(true)
+        setBlurProfile(blurMd)
+        const fetchCreatedTodos = await getTodosCountByProfileId(user.id, [true, false], [true, false])
+        const fetchCompletedTodos = await getTodosCountByProfileId(user.id, [true])
+        const fetchUncompletedTodos = await getTodosCountByProfileId(user.id, [false])
+        setCreatedTodos(fetchCreatedTodos)
+        setCompletedTodos(fetchCompletedTodos)
+        setUncompletedTodos(fetchUncompletedTodos)
+        setUserFirstName(user.name.split(' ')[0])
+        user.name = user.name.toLowerCase().split(' ').map((x) => x[0].toUpperCase() + x.slice(1)).join(' ')
+        user.created_at = formatDate(user.created_at)
+        setBlurProfile('')
+        setShowSpinner(false)
+            
+    }
+
+    useEffect(() => {
+        if (drawerState) {
+            fetchData()
+            
+        }
+    }, [drawerState])
+
+
+
+    const toggleDrawer = (state) => (event) => {
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+        return;
+        }
+
+        setDrawerState(state);
+    };
+
+    const logoutUser = () => {
+        localStorage.removeItem('@todo-app:jwt');
+        window.location.href = '/sign-in'
+    }
+
+    const list = () => (
+        <Box
+        sx={{ width: 315 }}
+        role="presentation"
+        onClick={toggleDrawer(false)}
+        onKeyDown={toggleDrawer(false)}
+        >
+            {showSpinner && (
+                    <div className="flex justify-center items-center fixed top-1/2 right-24 transform -translate-x-1/4 -translate-y-1/4 z-[99]">
+                        <Spinner/>
+                    </div>
+                )}
             <div
-                id="hs-overlay-right"
-                className="font-montserrat hs-overlay hs-overlay-open:translate-x-0 hidden overflow-y-auto translate-x-full fixed top-0 end-0 transition-all duration-300 transform h-full max-w-xs w-full w-full z-[60] bg-white border-s dark:bg-violet-800 dark:border-violet-700 hidden"
-                tabIndex={-1}
+                className={`${blurProfile} font-montserrat bg-white`}
             >
+                 
                 <div className="flex justify-between items-center py-3 px-4 border-b dark:border-violet-700">
                 <h3 className="font-satisfy font-bold text-2xl text-violet-800 dark:text-white">
                     Meu Perfil
@@ -18,7 +85,6 @@ export default function Profile() {
                 <button
                     type="button"
                     className="flex justify-center items-center w-7 h-7 text-sm font-semibold rounded-full border border-transparent text-violet-800 hover:bg-violet-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-violet-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-violet-600"
-                    data-hs-overlay="#hs-overlay-right"
                 >
                     <span className="sr-only">Close modal</span>
                     <svg
@@ -43,7 +109,7 @@ export default function Profile() {
                     <h3
                     id="profile-user-first-name"
                     className="text-lg leading-6 font-medium text-violet-800"
-                    ></h3>
+                    >Perfil de {userFirstName}</h3>
                     <p className="mt-1 max-w-2xl text-sm text-violet-500">
                     Apenas algumas informações sobre você.
                     </p>
@@ -57,14 +123,14 @@ export default function Profile() {
                         <dd
                         id="profile-user-name"
                         className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
-                        ></dd>
+                        >{user.name}</dd>
                     </div>
                     <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                         <dt className="text-sm font-medium text-violet-500">Email</dt>
                         <dd
                         id="profile-user-email"
                         className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
-                        ></dd>
+                        >{user.email}</dd>
                     </div>
                     <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                         <dt className="text-sm font-medium text-violet-500">
@@ -73,7 +139,7 @@ export default function Profile() {
                         <dd
                         id="profile-todo-count"
                         className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
-                        ></dd>
+                        >{createdTodos}</dd>
                     </div>
                     <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                         <dt className="text-sm font-medium text-violet-500">
@@ -82,7 +148,7 @@ export default function Profile() {
                         <dd
                         id="profile-completed-count"
                         className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
-                        ></dd>
+                        >{completedTodos}</dd>
                     </div>
                     <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                         <dt className="text-sm font-medium text-violet-500">
@@ -91,7 +157,7 @@ export default function Profile() {
                         <dd
                         id="profile-uncompleted-count"
                         className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
-                        ></dd>
+                        >{unCompletedTodos}</dd>
                     </div>
                     <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                         <dt className="text-sm font-medium text-violet-500">
@@ -100,29 +166,44 @@ export default function Profile() {
                         <dd
                         id="profile-created-at"
                         className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
-                        ></dd>
+                        >{user.created_at}</dd>
                     </div>
                     </dl>
                 </div>
                 </div>
-                <div className="m-5">
+                <div className="fixed bottom-8 mx-14">
                 <button
                     id="logout-button"
                     type="button"
-                    className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-violet-500 text-white hover:bg-violet-600 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-violet-600"
-                    data-hs-overlay="#hs-overlay-right"
+                    onClick={logoutUser}
+                    className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-violet-500 text-white hover:bg-violet-600 disabled:opacity-50 disabled:pointer-events-none"
                 >
-                    <span
-                    className="iconify text-2xl text-violet-200"
-                    data-icon="mdi:logout"
-                    data-rotate="180deg"
+                    <Icon 
+                        icon="mdi:logout"
+                        className="text-xl text-violet-200"
+                        rotate="180deg"
                     />
-                    Sair da minha conta
+                        Sair da minha conta
                 </button>
                 </div>
             </div>
+        </Box>
+    );
+
+    return (
+        <div>
+            <Fragment key={'right'}>
+            <ProfileButton 
+                    onClick={toggleDrawer(true)}>
+                </ProfileButton>
+            <Drawer
+                anchor={'right'}
+                open={drawerState}
+                onClose={toggleDrawer(false)}
+            >
+                {list('right')}
+            </Drawer>
+            </Fragment>
         </div>
-        <ProfileButton/>
-    </>
-    )
+    );
 }

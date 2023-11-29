@@ -1,5 +1,5 @@
 import Storage from '@/services/storage';
-import { createTodo, deleteTodo, getAllTodoByUser, getTodoById, updateTodo, updateTodoStatus } from '@/services/supabase';
+import { createTodo, deleteTodo, getAllTodoByUser, getTodoById, updateTodo, updateTodoStatus } from '@/services/supabase/supabase';
 import { orderByDate } from './orderByCreatedAt';
 
 

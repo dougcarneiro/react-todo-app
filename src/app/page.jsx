@@ -1,6 +1,5 @@
 'use client';
 
-import { NewTodoButton } from "@/components/NewTodoButton";
 import Spinner from "@/components/Spinner";
 import TodoCard from "@/components/TodoCard";
 import Todos from "@/lib/todos";
@@ -11,8 +10,9 @@ import { onTodoAddedContext } from "./hooks/OnTodoAddedContext";
 import { onTodoEditedContext } from "./hooks/OnTodoEditedContext";
 import { onTodoRemoveContext } from "./hooks/OnTodoRemoveContext";
 import LogInRedirectButton from "@/components/LogInRedirectButton";
+import Storage from "@/services/storage";
+import NewTodoButton from "@/components/NewTodoButton";
 import Profile from "@/components/Profile";
-
 
 
 export function Home() {
@@ -21,6 +21,7 @@ export function Home() {
     const [fetchTodos, setFetchTodos] = useState(true);
     const [showSpinner, setShowSpinner] = useState(true)
     const [blurTodos, setBlurTodos] = useState('')
+    const [user, setUser] = useState(null);
 
     const blurMd = 'blur-md'
 
@@ -36,12 +37,22 @@ export function Home() {
         }
 
     useEffect(() => {
+        const fetchUser = async () => {
+            const user = await Storage.getUserByJWT()
+            setUser(user)
+        }
+
+    fetchUser()
+
+    }, [])
+
+    useEffect(() => {
         Todos.loadStorage()
         fetchData()
         setFetchTodos(true)
     }, [fetchTodos])
     
-    const blurLoadingEffect = async (waitTime=400) => {
+    const blurLoadingEffect = async (waitTime=0) => {
         await new Promise(resolve => setTimeout(resolve, waitTime));
         setBlurTodos(blurMd)
         setShowSpinner(true)
@@ -61,7 +72,7 @@ export function Home() {
 
     const statusChange = async (todo, newStatus) => {
         todo.is_completed = newStatus
-        await blurLoadingEffect(50)
+        await blurLoadingEffect(0)
         await Todos.update(todo)
         setFetchTodos(false)
     }
@@ -83,9 +94,9 @@ export function Home() {
                         Você não possui afazeres.
                     </h2>
                     )}
-                    <div className="absolute top-8 right-8">
-                        <LogInRedirectButton/>
-                        <Profile/>
+                    <div className="fixed bottom-8 right-8 z-[99] md:absolute md:top-8">
+                        {user && (<Profile user={user}/>)}
+                        {!user && (<LogInRedirectButton/>)}
                     </div>
                     <div className="fixed bottom-8 left-8 md:top-8 z-[99]">
                         <onTodoAddedContext.Provider value={todoChange}>
@@ -94,7 +105,7 @@ export function Home() {
                     </div>
                 {showSpinner && (
                     <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[99]">
-                        <Spinner />
+                        <Spinner/>
                     </div>
                 )}
                 <onStatusChangeContext.Provider value={statusChange}>
