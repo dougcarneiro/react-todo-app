@@ -10,10 +10,10 @@ import { onTodoAddedContext } from "./hooks/OnTodoAddedContext";
 import { onTodoEditedContext } from "./hooks/OnTodoEditedContext";
 import { onTodoRemoveContext } from "./hooks/OnTodoRemoveContext";
 import LogInRedirectButton from "@/components/LogInRedirectButton";
-import Storage from "@/services/storage";
 import NewTodoModal from "@/components/NewTodoModal";
 import Profile from "@/components/Profile";
 import SearchBar from "@/components/SearchBar";
+import { getLoggedUser } from "@/services/supabase/supabase";
 
 
 export function Home() {
@@ -28,35 +28,46 @@ export function Home() {
                            isSearching: false}
     
     const [todos, setTodos] = useState(null);
-    const [fetchTodos, setFetchTodos] = useState(true);
+    const [fetchTodos, setFetchTodos] = useState(null);
     const [showSpinner, setShowSpinner] = useState(true)
     const [blurTodos, setBlurTodos] = useState('')
     const [user, setUser] = useState(null);
+    const [fetchedUser, setFetchedUser] = useState(false);
     const [searchOptions, setSearchOptions] = useState(defaultSearch)
 
     const blurMd = 'blur-md'
 
-    const fetchData = async (searchOptions) => {
-            try {
-                const fetchedTodos = await Todos.load(searchOptions)
-                setTodos(fetchedTodos)
-                setBlurTodos('')
-                setShowSpinner(false)
-            } catch (error) {
-                console.error('Erro ao buscar dados:', error);
-            }
-        }
-
     useEffect(() => {
         const fetchUser = async () => {
-            const user = await Storage.getUserByJWT()
+            const user = await getLoggedUser()
             setUser(user)
+            setFetchedUser(true)
         }
 
     fetchUser()
 
     }, [])
-    
+
+    const fetchData = async (searchOptions, user) => {
+            if (fetchedUser) {
+                try {
+                    const fetchedTodos = await Todos.load(searchOptions, user)
+                    setTodos(fetchedTodos)
+                    setBlurTodos('')
+                    setShowSpinner(false)
+                } catch (error) {
+                    console.error('Erro ao buscar dados:', error);
+                }
+            }
+        }
+
+     useEffect(() => {
+        blurLoadingEffect()
+        Todos.loadStorage()
+        fetchData(searchOptions, user)
+        setFetchTodos(true)
+    }, [fetchTodos, user])
+
     const blurLoadingEffect = () => {
         setBlurTodos(blurMd)
         setShowSpinner(true)
@@ -86,11 +97,6 @@ export function Home() {
         setFetchTodos(false)
     }
 
-    useEffect(() => {
-        Todos.loadStorage()
-        fetchData(searchOptions)
-        setFetchTodos(true)
-    }, [fetchTodos])
     
     return (
         <> 
@@ -104,14 +110,14 @@ export function Home() {
                     A melhor forma de organizar seus afazeres
                 </h2>
             </a>
-            {todos && todos.length == 0 && (
+            {fetchedUser && todos && todos.length == 0 && (
             <h2 className="text-center text-2xl my-12 font-bold text-violet-900">
                 Você não possui afazeres.
             </h2>
             )}
-            <div className="fixed bottom-8 right-8 z-[99] md:absolute md:top-8 md:right-8 md:z-[50]">
-                {user && (<Profile user={user}/>)}
-                {!user && (<LogInRedirectButton/>)}
+            <div className="fixed bottom-8 right-8 z-[99] md:absolute md:top-8 md:right-8 md:z-[0]">
+                {user && (<Profile profile={user.profile}/>)}
+                {!user && fetchedUser && (<LogInRedirectButton/>)}
             </div>
             <div className="fixed bottom-8 left-8 md:top-8 z-[99]">
                 <onTodoAddedContext.Provider value={todoChange}>

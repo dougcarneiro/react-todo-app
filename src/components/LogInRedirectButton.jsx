@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react';
 export default function LogInRedirectButton() {
     return (
        <>
-        <a href="/sign-in">
+        <a href="/auth/sign">
             <button
                 id="login-button"
                 type="button"

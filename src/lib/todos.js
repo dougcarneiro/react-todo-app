@@ -1,11 +1,11 @@
 import Storage from '@/services/storage';
-import { createTodo, deleteTodo, getAllTodoByUser, getTodoById, updateTodo, updateTodoStatus } from '@/services/supabase/supabase';
+import { createTodo, deleteTodo, getAllTodoByUser, getLoggedUser, getTodoById, updateTodo, updateTodoStatus } from '@/services/supabase/supabase';
 import { orderByDate } from './orderByCreatedAt';
 
 
-async function load(options = {}) {
-  const loggedUser = await Storage.getUserByJWT()
-  
+async function load(options = {}, user = null) {
+  const loggedUser = user
+
   const {
     title = '',
     notDone = false,
@@ -22,7 +22,7 @@ async function load(options = {}) {
   let todos
   
   if (loggedUser) {
-    const { data, error } =  await getAllTodoByUser(loggedUser.id, options)
+    const { data, error } =  await getAllTodoByUser(loggedUser.profile.id, options)
     if (data) {
       todos = data
     }
@@ -48,7 +48,7 @@ async function load(options = {}) {
       todo.is_completed
       );
     }
-  
+
     let todosHigh = []
     let todosMedium = []
     let todosLow = []
@@ -97,11 +97,11 @@ async function load(options = {}) {
 
 
 async function get(id) {
-  const loggedUser = await Storage.getUserByJWT()
+  const loggedUser = await getLoggedUser()
   if (loggedUser) {
     const { data, error } = await getTodoById(id)
     if (data) {
-      return data[0]
+      return data
     }
   } else {
     return Storage.read('todos', id)
@@ -127,10 +127,10 @@ async function update(todo, isCreating) {
   const { id } = todo;
   let updatedTodo
 
-  const loggedUser = await Storage.getUserByJWT()
+  const loggedUser = await getLoggedUser()
 
   if (isCreating) {
-      await create(todo, loggedUser)
+      await create(todo, loggedUser.profile)
     } else {
       if (loggedUser) {
         try {
@@ -148,7 +148,7 @@ async function update(todo, isCreating) {
 async function remove(todo) {
   const { id } = todo;
 
-  const loggedUser = await Storage.getUserByJWT()
+  const loggedUser = await getLoggedUser()
   if (loggedUser) {
     const { data, erro } = await deleteTodo(todo)
   } else {

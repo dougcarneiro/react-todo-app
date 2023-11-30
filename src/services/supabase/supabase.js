@@ -25,6 +25,7 @@ export async function getProfileByEmail(email) {
     return await supabase.from('Profile')
                             .select(PROFILE_SELECT)
                             .eq('email', email)
+                            .single()
 }
 
 export async function createProfile(profile) {
@@ -43,12 +44,13 @@ export async function updateProfile(profile) {
 // USER MANAGEMENT SUPABASE PROVIDED
 export async function signUp(user) {
     const existingUser = await getProfileByEmail(user.email)
-    if (existingUser.data[0]) {
+    if (existingUser.data) {
         return false
     }
     const { data, error } = await supabase.auth.signUp({ ...user })
     const created_user = data.user
     if (created_user) {
+        const user = data
         const profile = {
             name: user.name,
             user_id: created_user.id,
@@ -56,7 +58,8 @@ export async function signUp(user) {
             password: created_user.encrypted_password
         }
         const { data, error } = await createProfile(profile)
-        return {data, error}
+        user.profile = data
+        return { user, error }
     } else {
         return error
     }
@@ -64,7 +67,7 @@ export async function signUp(user) {
 
 export async function singIn(email, password) {
     const existingUser = await getProfileByEmail(email)
-    if (!existingUser.data[0]) {
+    if (!existingUser.data) {
         return false
     }
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -87,7 +90,17 @@ export async function logOut() {
 }
 
 export async function getLoggedUser() {
-    return await supabase.auth.getUser()
+    try {
+        const { data: { user}  } = await supabase.auth.getUser()
+        if (user) {
+            const { data, error } = await getProfileByEmail(user.email)
+            user.profile = data
+            return user
+        }
+    } catch (error) {
+        console.error(error)
+    }
+    
 }
 
 export async function updateLoggedUser(data) {
@@ -151,6 +164,7 @@ export async function getTodoById(id) {
     return await supabase.from('Todo')
                          .select()
                          .eq('id', id)
+                         .single()
 }
 
 export async function deleteTodo(todo) {

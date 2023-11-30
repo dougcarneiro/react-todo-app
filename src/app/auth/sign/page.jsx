@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { signUp, singIn } from '@/services/supabase/supabase';
+import { getLoggedUser, signUp, singIn } from '@/services/supabase/supabase';
 import { signJWT } from '@/services/jwt';
 import Storage from '@/services/storage';
 import SingInUpConfirmButton from '@/components/signInUpConfirmButton';
@@ -22,25 +22,44 @@ export default function SignIn() {
         
       });
 
-      const defaultFieldBg = 'border-violet-200'
+    const defaultFieldBg = 'border-violet-200'
 
-      const [showInvalidCredentialsAlert, setShowInvalidCredentialsAlert] = useState(false)
-      const [showLogInButton, setShowLoginButton] = useState(true);
-      const [showSignUpButton, setShowSignUpButton] = useState(false);
-      const [showLoadingButton, setShowLoadingButton] = useState(false);
-      const [showDisabledConfirm, setShowDisabledConfirm] = useState(false);
-      const [showDisableEnter, setShowDisableEnter] = useState(false);
-      const [errorFieldClass, setErrorFieldClass] = useState('border-violet-200')
-      const [emailErrorField, setEmailErrorField] = useState(false)
+    const [showInvalidCredentialsAlert, setShowInvalidCredentialsAlert] = useState(false)
+    const [showLogInButton, setShowLoginButton] = useState(true);
+    const [showSignUpButton, setShowSignUpButton] = useState(false);
+    const [showLoadingButton, setShowLoadingButton] = useState(false);
+    const [showDisabledConfirm, setShowDisabledConfirm] = useState(false);
+    const [showDisableEnter, setShowDisableEnter] = useState(false);
+    const [errorFieldClass, setErrorFieldClass] = useState('border-violet-200')
+    const [emailErrorField, setEmailErrorField] = useState(false)
 
 
-      let [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-      });
+    let [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    });
 
+    const [user, setUser] = useState(null);
+    const [fetchedUser, setFetchedUser] = useState(false);
+
+    useEffect(() => {
+    const fetchUser = async () => {
+        try {
+            const fetchUser = await getLoggedUser()
+            if (fetchUser) {
+                setUser(fetchUser)
+                window.location.href = "/"
+            }
+            setFetchedUser(true)
+        } catch (error) {
+            console.error('Erro ao buscar dados:', error);
+        }
+    };
+
+    fetchUser();
+    }, [user]);
 
     async function handleSignUp() {
         setShowInvalidCredentialsAlert(false)
@@ -73,9 +92,9 @@ export default function SignIn() {
            if (error) {
             return
            } else {
-            const { data, error } = await signUp(formData)
-            if (data) {
-                await generateToken(data)
+            const { user, error } = await signUp(formData)
+            if (user) {
+                setUser(user)
             } else {
                 setErrorFieldClass('border-red-500 bg-red-100')
                 setEmailErrorField(true)
@@ -91,7 +110,7 @@ export default function SignIn() {
                 setShowLoadingButton(false)
                 setShowLoginButton(true)
             } else {
-                await generateToken(data)
+                setUser(data)
             }
         }
     }
@@ -123,31 +142,6 @@ export default function SignIn() {
         window.localStorage.setItem(`@todo-app:jwt`, token);
         window.location.href = "/"
     }
-
-    const [user, setUser] = useState(null);
-    const [fetchedUser, setFetchedUser] = useState(false);
-
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const fetchUser = await Storage.getUserByJWT()
-                if (fetchUser) {
-                    setUser(fetchUser)
-                }
-                setFetchedUser(true)
-            } catch (error) {
-                console.error('Erro ao buscar dados:', error);
-            }
-        };
-    
-        fetchUser();
-      }, []);
-
-    useEffect(() => {
-        if (user) {
-            window.location.href = "/"
-        }
-    }, [user])
 
     return (
         <>  

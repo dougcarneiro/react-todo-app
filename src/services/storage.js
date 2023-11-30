@@ -89,6 +89,7 @@ function remove(resource, id) {
   storageInsert(resource, values);
 }
 
+// deprecated
 async function getUserByJWT() {
   const jwt = window.localStorage.getItem('@todo-app:jwt')
   if (jwt) {

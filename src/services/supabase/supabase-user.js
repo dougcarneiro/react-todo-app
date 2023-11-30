@@ -11,5 +11,5 @@ export async function getUserProfileData(user) {
 
 export function logoutUser() {
     localStorage.removeItem('@todo-app:jwt');
-    window.location.href = '/sign-in'
+    window.location.href = '/auth/sign'
 }

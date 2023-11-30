@@ -5,12 +5,12 @@ import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import ProfileButton from './ProfileButton';
 import { Icon } from '@iconify/react';
-import { getTodosCountByProfileId } from '@/services/supabase/supabase';
+import { getTodosCountByProfileId, logOut } from '@/services/supabase/supabase';
 import { formatDate } from '@/lib/format';
 import Spinner from './Spinner';
 
 
-export default function Profile({user}) {
+export default function Profile({profile}) {
 
     const [createdTodos, setCreatedTodos] = useState(null)
     const [completedTodos, setCompletedTodos] = useState(null)
@@ -28,15 +28,15 @@ export default function Profile({user}) {
     const fetchData = async () => {
         setShowSpinner(true)
         setBlurProfile(blurMd)
-        const fetchCreatedTodos = await getTodosCountByProfileId(user.id, [true, false], [true, false])
-        const fetchCompletedTodos = await getTodosCountByProfileId(user.id, [true])
-        const fetchUncompletedTodos = await getTodosCountByProfileId(user.id, [false])
+        const fetchCreatedTodos = await getTodosCountByProfileId(profile.id, [true, false], [true, false])
+        const fetchCompletedTodos = await getTodosCountByProfileId(profile.id, [true])
+        const fetchUncompletedTodos = await getTodosCountByProfileId(profile.id, [false])
         setCreatedTodos(fetchCreatedTodos)
         setCompletedTodos(fetchCompletedTodos)
         setUncompletedTodos(fetchUncompletedTodos)
-        setUserFirstName(user.name.split(' ')[0])
-        setUserCreatedAt(formatDate(user.created_at))
-        setUserName(user.name.toLowerCase().split(' ').map((x) => x[0].toUpperCase() + x.slice(1)).join(' '))
+        setUserFirstName(profile.name.split(' ')[0])
+        setUserCreatedAt(formatDate(profile.created_at))
+        setUserName(profile.name.toLowerCase().split(' ').map((x) => x[0].toUpperCase() + x.slice(1)).join(' '))
         setBlurProfile('')
         setShowSpinner(false)
             
@@ -59,9 +59,9 @@ export default function Profile({user}) {
         setDrawerState(state);
     };
 
-    const logoutUser = () => {
-        localStorage.removeItem('@todo-app:jwt');
-        window.location.href = '/sign-in'
+    const logoutUser = async () => {
+        await logOut()
+        window.location.href = '/auth/sign'
     }
 
     const list = () => (
@@ -85,6 +85,7 @@ export default function Profile({user}) {
                 </h3>
                 <button
                     type="button"
+                    onClick={toggleDrawer(false)}
                     className="flex justify-center items-center w-7 h-7 text-sm font-semibold rounded-full border border-transparent text-violet-800 hover:bg-violet-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-violet-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-violet-600"
                 >
                     <span className="sr-only">Close modal</span>
@@ -131,7 +132,7 @@ export default function Profile({user}) {
                         <dd
                         id="profile-user-email"
                         className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
-                        >{user.email}</dd>
+                        >{profile.email}</dd>
                     </div>
                     <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                         <dt className="text-sm font-medium text-violet-500">
