@@ -398,7 +398,7 @@ export default function SignIn() {
                 )}
                 {state.showResetPassButton && (
                 <SingInUpConfirmButton 
-                    buttonTitle={'Solicitar reenvio de senha'}/>
+                    buttonTitle={'Solicitar recuperação de senha'}/>
                 )}
                 {showDisabledConfirm && (
                     <SingInUpDisabledButton buttonTitle={'Confirmar'}/>)}

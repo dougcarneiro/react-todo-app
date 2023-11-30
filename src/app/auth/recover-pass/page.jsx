@@ -97,15 +97,12 @@ export default function SignIn() {
         <div className="flex flex-col justify-center px-6 py-12 lg:px-8">
        
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            
-            <a href="/">
                 <h1 className="text-center text-9xl mt-6 font-medium font-satisfy text-violet-800 drop-shadow-lg">
                 Tásku
                 </h1>
                 <h2 className="text-center text-3xl mt-6 italic font-medium font-satisfy text-violet-600 drop-shadow-lg">
                 A melhor forma de organizar seus afazeres
                 </h2>
-            </a>
             </div>
 
             {!fetchedUser && (
