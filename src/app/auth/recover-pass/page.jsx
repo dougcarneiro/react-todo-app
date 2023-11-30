@@ -14,32 +14,18 @@ import { Icon } from '@iconify/react';
 
 export default function SignIn() {
     const [state, setState] = useState({
-        showLogInButton: true,
-        showForgotPassButton: true,
-        showSignInButton: false,
-        showName: false,
-        showConfirmPass: false,
-        showGoToSignInButton: true,
-        showSignUpButton: false,
-        showResetPassButton: false,
-        showBackButton: false,
-        
+        showConfirmButton: true,
       });
 
     const defaultFieldBg = 'border-violet-200'
 
-    const [showInvalidCredentialsAlert, setShowInvalidCredentialsAlert] = useState(false)
     const [showPassField, setShowPassField] = useState(true);
     const [showLoadingButton, setShowLoadingButton] = useState(false);
     const [showDisabledConfirm, setShowDisabledConfirm] = useState(false);
-    const [showDisableEnter, setShowDisableEnter] = useState(false);
     const [errorFieldClass, setErrorFieldClass] = useState('border-violet-200')
-    const [emailErrorField, setEmailErrorField] = useState(false)
 
 
     let [formData, setFormData] = useState({
-    name: '',
-    email: '',
     password: '',
     confirmPassword: '',
     });
@@ -206,63 +192,7 @@ export default function SignIn() {
             
             {fetchedUser && !user && (<div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
             <form className="space-y-6" action="#" onSubmit={handleSubmit}>
-                {state.showName &&(<div id="name-div">
-                <label
-                    htmlFor="name"
-                    className="block text-sm font-medium leading-6 text-violet-900"
-                >
-                    Nome
-                </label>
-                    <div className="mt-2">
-                        <input
-                        id="name"
-                        name="name"
-                        type="name"
-                        required={true}
-                        value={formData.name}
-                        onChange={handleChange}
-                        maxLength={150}
-                        minLength={2}
-                        onBlur={handleBlur}
-                        autoComplete="name"
-                        className="mt-1 mb-1 w-full py-2.5 px-4 block border text-violet-800 border-violet-200 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-                        />
-                    </div>
-                </div>)}
-                <div>
-                <label
-                    htmlFor="email"
-                    className="block text-sm font-medium leading-6 text-violet-900"
-                >
-                    Email
-                </label>
-                <div className="mt-2">
-                    <input
-                    required={true}
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    onFocus={() => {
-                        setErrorFieldClass(defaultFieldBg)
-                        setShowDisabledConfirm(false)
-                        if (emailErrorField) {
-                            setShowSignUpButton(true)
-                            setEmailErrorField(false)}}
-                        }
-                    autoComplete="email"
-                    className={`mt-1 mb-1 w-full py-2.5 px-4 block border text-violet-800 ${errorFieldClass} rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-violet-500`}
-                    />
-                    {
-                        emailErrorField && (
-                            <ErrorFieldText text={'Já existe um usuário cadastrado com esse email.'}/>
-                        )
-                    }
-   
-                </div>
-                </div>
+               
                 <div id="password-div">
                     {showPassField && (
                     <>
@@ -310,7 +240,7 @@ export default function SignIn() {
                     </div>
                     </>
                     )}
-                    {state.showConfirmPass && (<div className="mt-5">
+                    <div className="mt-5">
                         <div className="flex items-center justify-between">
                             <label
                             htmlFor="password"
@@ -339,66 +269,21 @@ export default function SignIn() {
                             As senhas precisam ser iguais.
                             </p>
                         </div>
-                    </div>)}
+                    </div>
                 </div>
-                {showInvalidCredentialsAlert && (
-                <div
-                    id="invalid-credentials-alert"
-                    className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                    role="alert"
-                    >
-                    <strong className="font-bold px-1">Credenciais inválidas!</strong>
-                    <span className="block sm:inline px-1">Se certifique que você informou os dados corretos.</span>
-                    <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
-                        <svg
-                        className="fill-current h-6 w-6 text-red-500"
-                        role="button"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        onClick={() => setShowInvalidCredentialsAlert(false)}
-                        >
-                        <title>Fechar</title>
-                        <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
-                        </svg>
-                    </span>
-                </div>)}
+
                 <div id="sign-in-button-div" className="">
                 {showLoadingButton && (
                     <SingInUpButtonSpinner/>)}
-                {state.showLogInButton && (
-                    <SingInUpConfirmButton 
-                        buttonTitle={'Entrar'}/>
-                    )}
-                {showDisableEnter && (
-                    <SingInUpDisabledButton 
-                        buttonTitle={'Entrar'}
-                        />)}
 
-                {state.showSignUpButton && (
+                {state.showConfirmButton && (
                 <SingInUpConfirmButton 
                     buttonTitle={'Confirmar'}/>
-                )}
-                {state.showResetPassButton && (
-                <SingInUpConfirmButton 
-                    buttonTitle={'Solicitar reenvio de senha'}/>
                 )}
                 {showDisabledConfirm && (
                     <SingInUpDisabledButton buttonTitle={'Confirmar'}/>)}
                 </div>
             </form>
-            {state.showGoToSignInButton && (<div id="sign-up-div">
-                <p className="mt-10 text-center text-sm text-violet-600">
-                Primeira vez acessando?
-                <a
-                    href="#"
-                    id="sign-up-button"
-                    className="font-semibold leading-6 text-violet-600 hover:text-violet-500"
-                    onClick={handleSignUp}
-                > Faça o seu cadastro agora!
-                </a>
-                </p>
-            </div>)}
-            <p/>
             </div>)}
         </div>
         </>
