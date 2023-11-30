@@ -68,7 +68,6 @@ export default function Profile({user}) {
         <Box
         sx={{ width: 315 }}
         role="presentation"
-        onClick={toggleDrawer(false)}
         onKeyDown={toggleDrawer(false)}
         >
             {showSpinner && (
