@@ -12,12 +12,13 @@ import Spinner from './Spinner';
 
 export default function Profile({profile}) {
 
+    const userName = profile.name.toLowerCase().split(' ').map((x) => x[0].toUpperCase() + x.slice(1)).join(' ')
+    const userFirstName = userName.split(' ')[0]
+
     const [createdTodos, setCreatedTodos] = useState(null)
     const [completedTodos, setCompletedTodos] = useState(null)
     const [unCompletedTodos, setUncompletedTodos] = useState(null)
-    const [userFirstName, setUserFirstName] = useState(null)
     const [userCreatedAt, setUserCreatedAt] = useState(null)
-    const [userName, setUserName] = useState(null)
     
     const [drawerState, setDrawerState] = useState(false);
     const [blurProfile, setBlurProfile] = useState('')
@@ -34,9 +35,7 @@ export default function Profile({profile}) {
         setCreatedTodos(fetchCreatedTodos)
         setCompletedTodos(fetchCompletedTodos)
         setUncompletedTodos(fetchUncompletedTodos)
-        setUserFirstName(profile.name.split(' ')[0])
         setUserCreatedAt(formatDate(profile.created_at))
-        setUserName(profile.name.toLowerCase().split(' ').map((x) => x[0].toUpperCase() + x.slice(1)).join(' '))
         setBlurProfile('')
         setShowSpinner(false)
             

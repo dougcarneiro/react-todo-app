@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { getLoggedUser, signUp, singIn } from '@/services/supabase/supabase';
+import { getLoggedUser, resetPassword, signUp, singIn } from '@/services/supabase/supabase';
 import { signJWT } from '@/services/jwt';
 import Storage from '@/services/storage';
 import SingInUpConfirmButton from '@/components/signInUpConfirmButton';
@@ -13,17 +13,16 @@ import { Icon } from '@iconify/react';
 
 
 export default function SignIn() {
-    const [state, setState] = useState({
-        showConfirmButton: true,
-      });
 
     const defaultFieldBg = 'border-violet-200'
 
-    const [showPassField, setShowPassField] = useState(true);
-    const [showLoadingButton, setShowLoadingButton] = useState(false);
-    const [showDisabledConfirm, setShowDisabledConfirm] = useState(false);
-    const [errorFieldClass, setErrorFieldClass] = useState('border-violet-200')
-
+    const [state, setState] = useState({
+        errorFieldClass: defaultFieldBg,
+        showConfirmButton: true,
+        showLoadingButton: false,
+        showDisabledConfirm: false,
+        
+      });
 
     let [formData, setFormData] = useState({
     password: '',
@@ -39,6 +38,8 @@ export default function SignIn() {
             const fetchUser = await getLoggedUser()
             if (fetchUser) {
                 setUser(fetchUser)
+                
+            } else {
                 window.location.href = "/"
             }
             setFetchedUser(true)
@@ -50,16 +51,6 @@ export default function SignIn() {
     fetchUser();
     }, [user]);
 
-    async function handleSignUp() {
-        setShowInvalidCredentialsAlert(false)
-        setState({
-            showBackButton: true,
-            showSignUpButton: true,
-            showName: true,
-            showConfirmPass: true,
-            showLogInButton: false,
-        })
-    }
 
     const handleChange = (e) => {
         setFormData({
@@ -68,57 +59,17 @@ export default function SignIn() {
           });
     }
 
-    async function handleForgetPass() {
-        setShowInvalidCredentialsAlert(false)
-        setState({
-            showBackButton: true,
-            showLogInButton: false,
-            showGoToSignInButton: false,
-            showResetPassButton: true,
-        })
-        setShowPassField(false)
-    }
-
     async function handleSubmit(event) {
         event.preventDefault()
-        let error
-        setShowInvalidCredentialsAlert(false)
         setState({
-            showLogInButton: false,
-            showSignInButton: false,
-            showForgotPassButton: false,
+            showConfirmButton: false,
+            showLoadingButton: true,
         })
-        setShowLoadingButton(true)
-        const isSignUp = formData.name == '' ? false : true
-        const isSignIn = formData.password != '' ? true : false
-        if (isSignUp) {
-           error = checkPasswordsDiff(formData.password, formData.confirmPassword)
-           if (error) {
-            return
-           } else {
-            const { user, error } = await signUp(formData)
-            if (user) {
-                setUser(user)
-            } else {
-                setErrorFieldClass('border-red-500 bg-red-100')
-                setEmailErrorField(true)
-                setShowLoadingButton(false)
-                setShowDisabledConfirm(true)
-                
-                }
-           }
-        } else if (isSignIn) {
-            const { data, error } = await singIn(formData.email, formData.password)
-            if (!data) {
-                setShowInvalidCredentialsAlert(true)
-                setShowLoadingButton(false)
-                setState({showLogInButton: false})
-            } else {
-                setUser(data)
-            }
-        } else {
-            // TODO lógica de reenvio de senha
-        }
+
+        const newPassword = formData.password
+        await resetPassword(newPassword)
+
+        window.location.href = "/"
     }
 
     function checkPasswordsDiff(password, confirmPassword) {
@@ -135,41 +86,14 @@ export default function SignIn() {
 
     function handleBlur() {
         setFormData(() => ({
-          name: formData.name.trim(),
-          email: formData.email.trim(),
           password: formData.password.trim(),
           confirmPassword: formData.confirmPassword.trim(),
           })
         )
       }
 
-    async function generateToken(data) {
-        const token = await signJWT(data)
-        window.localStorage.setItem(`@todo-app:jwt`, token);
-        window.location.href = "/"
-    }
-
     return (
         <>  
-         {state.showBackButton && (<button
-            onClick={() => {
-                setShowPassField(true)
-                setState({
-                    showForgotPassButton: true,
-                    showSignUpButton: false,
-                    showLogInButton: true,
-                    showSignInButton: false,
-                    showGoToSignInButton: true,
-                    
-                })
-            }}
-            type="button"
-            className="absolute top-8 left-8 inline-flex py-2 px-2 justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-violet-500 text-white hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition-all text-sm md:py-3 md:px-4"
-            >
-            <Icon 
-            icon="lets-icons:back"
-            className="text-violet-200 text-2xl"/>
-        </button>)}
         <div className="flex flex-col justify-center px-6 py-12 lg:px-8">
        
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -190,11 +114,10 @@ export default function SignIn() {
                 </div>
             )}
             
-            {fetchedUser && !user && (<div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+            {fetchedUser && user && (<div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
             <form className="space-y-6" action="#" onSubmit={handleSubmit}>
                
                 <div id="password-div">
-                    {showPassField && (
                     <>
                     <div className="flex items-center justify-between">
                         <label
@@ -203,16 +126,6 @@ export default function SignIn() {
                         >
                         Senha
                         </label>
-                        {state.showForgotPassButton && (<div className="text-sm">
-                        <a
-                            href="#"
-                            id="password-reset-button"
-                            onClick={handleForgetPass}
-                            className="font-semibold text-violet-600 hover:text-violet-500"
-                        >
-                            Esqueceu a senha?
-                        </a>
-                        </div>)}
                         
                     </div>
                     <div className="mt-2">
@@ -239,7 +152,6 @@ export default function SignIn() {
     
                     </div>
                     </>
-                    )}
                     <div className="mt-5">
                         <div className="flex items-center justify-between">
                             <label
@@ -273,14 +185,14 @@ export default function SignIn() {
                 </div>
 
                 <div id="sign-in-button-div" className="">
-                {showLoadingButton && (
+                {state.showLoadingButton && (
                     <SingInUpButtonSpinner/>)}
 
                 {state.showConfirmButton && (
-                <SingInUpConfirmButton 
-                    buttonTitle={'Confirmar'}/>
+                    <SingInUpConfirmButton 
+                        buttonTitle={'Confirmar'}/>
                 )}
-                {showDisabledConfirm && (
+                {state.showDisabledConfirm && (
                     <SingInUpDisabledButton buttonTitle={'Confirmar'}/>)}
                 </div>
             </form>

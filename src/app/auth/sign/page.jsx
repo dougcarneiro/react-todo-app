@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { getLoggedUser, signUp, singIn } from '@/services/supabase/supabase';
+import { getLoggedUser, passwordRecovery, signUp, singIn } from '@/services/supabase/supabase';
 import { signJWT } from '@/services/jwt';
-import Storage from '@/services/storage';
 import SingInUpConfirmButton from '@/components/signInUpConfirmButton';
 import SingInUpButtonSpinner from '@/components/signInUpButtonSpinner';
 import SingInUpDisabledButton from '@/components/signInUpDisabledButton';
@@ -29,6 +28,8 @@ export default function SignIn() {
     const defaultFieldBg = 'border-violet-200'
 
     const [showInvalidCredentialsAlert, setShowInvalidCredentialsAlert] = useState(false)
+    const [showSentResetPassAlert, setShowSentResetPassAlert] = useState(false)
+
     const [showPassField, setShowPassField] = useState(true);
     const [showLoadingButton, setShowLoadingButton] = useState(false);
     const [showDisabledConfirm, setShowDisabledConfirm] = useState(false);
@@ -97,7 +98,9 @@ export default function SignIn() {
         event.preventDefault()
         let error
         setShowInvalidCredentialsAlert(false)
+        setShowSentResetPassAlert(false)
         setState({
+            showResetPassButton: false,
             showLogInButton: false,
             showSignInButton: false,
             showForgotPassButton: false,
@@ -131,7 +134,11 @@ export default function SignIn() {
                 setUser(data)
             }
         } else {
-            // TODO lógica de reenvio de senha
+            const email = formData.email
+            await passwordRecovery(email)
+            setShowSentResetPassAlert(true)
+            setShowLoadingButton(false)
+            setState({showBackButton: true})
         }
     }
 
@@ -161,6 +168,7 @@ export default function SignIn() {
         const token = await signJWT(data)
         window.localStorage.setItem(`@todo-app:jwt`, token);
         window.location.href = "/"
+        
     }
 
     return (
@@ -168,13 +176,14 @@ export default function SignIn() {
          {state.showBackButton && (<button
             onClick={() => {
                 setShowPassField(true)
+                setShowSentResetPassAlert(false)
                 setState({
                     showForgotPassButton: true,
                     showSignUpButton: false,
                     showLogInButton: true,
                     showSignInButton: false,
                     showGoToSignInButton: true,
-                    
+                    showBackButton: false,
                 })
             }}
             type="button"
@@ -361,6 +370,15 @@ export default function SignIn() {
                         <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
                         </svg>
                     </span>
+                </div>)}
+                {showSentResetPassAlert && (
+                <div
+                    id="sent-reset-pass-alert"
+                    className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+                    role="alert"
+                    >
+                    <strong className="font-bold px-1">E-mail de recuperação de senha enviado!</strong>
+                    <span className="block sm:inline px-1">Verifique sua caixa de entrada.</span>
                 </div>)}
                 <div id="sign-in-button-div" className="">
                 {showLoadingButton && (

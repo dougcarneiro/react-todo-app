@@ -182,3 +182,11 @@ export async function getTodosCountByProfileId(profileId, isCompleted=[false, tr
                          .in('is_completed', isCompleted)
     return count
 }
+
+export async function passwordRecovery(email) {
+    await supabase.auth.resetPasswordForEmail(email)
+}
+
+export async function resetPassword(newPassword) {
+    await supabase.auth.updateUser({ password: newPassword })
+}
