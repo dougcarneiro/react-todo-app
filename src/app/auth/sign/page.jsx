@@ -129,7 +129,11 @@ export default function SignIn() {
             if (!data) {
                 setShowInvalidCredentialsAlert(true)
                 setShowLoadingButton(false)
-                setState({showLogInButton: false})
+                setState({
+                    showLogInButton: true,
+                    showGoToSignInButton: true,
+                    showForgotPassButton: true,
+                })
             } else {
                 setUser(data)
             }
@@ -193,7 +197,7 @@ export default function SignIn() {
             icon="lets-icons:back"
             className="text-violet-200 text-2xl"/>
         </button>)}
-        <div className="flex flex-col justify-center px-6 py-12 lg:px-8">
+        <div className="font-montserrat flex flex-col justify-center px-6 py-12 lg:px-8">
        
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             
@@ -374,11 +378,11 @@ export default function SignIn() {
                 {showSentResetPassAlert && (
                 <div
                     id="sent-reset-pass-alert"
-                    className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+                    className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative"
                     role="alert"
                     >
-                    <strong className="font-bold px-1">E-mail de recuperação de senha enviado!</strong>
-                    <span className="block sm:inline px-1">Verifique sua caixa de entrada.</span>
+                    <strong className="font-bold px-1">Solicitação feita!</strong>
+                    <span className="block sm:inline px-1">Caso o endereço esteja cadastrado em nosso banco de dados, você receberá o email com as instruções.</span>
                 </div>)}
                 <div id="sign-in-button-div" className="">
                 {showLoadingButton && (

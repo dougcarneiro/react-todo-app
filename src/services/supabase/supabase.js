@@ -1,6 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
 
 
+const ENV_URL = process.env.NEXT_PUBLIC_ENV_URL
+
 const SUPABASE_PROJECT_URL = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL
 const SUPABASE_API_SECRET_KEY = process.env.NEXT_PUBLIC_SUPABASE_API_SECRET_KEY
 
@@ -184,9 +186,41 @@ export async function getTodosCountByProfileId(profileId, isCompleted=[false, tr
 }
 
 export async function passwordRecovery(email) {
-    await supabase.auth.resetPasswordForEmail(email)
+    
+    const { data } = await getProfileByEmail(email)
+    const profile = data
+    if (profile) {
+        const { data }  = await createPassToken(profile.id) 
+        const passToken = data
+        const url = `${ENV_URL}auth/recover-pass?recoverPassToken=${passToken.id}`
+        await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: url
+        })
+    }
 }
 
 export async function resetPassword(newPassword) {
     await supabase.auth.updateUser({ password: newPassword })
+}
+
+
+export async function createPassToken(profile_id) {
+    return await supabase.from('PasswordToken')
+                         .insert({ profile_id })
+                         .select()
+                         .single()
+}
+
+export async function updatePassToken(token) {
+    await supabase.from('PasswordToken')
+                        .update({'is_active': false})
+                        .eq('id', token.id)
+}
+
+export async function getPassTokenById(id) {
+    return await supabase.from('PasswordToken')
+                         .select()
+                         .eq('id', id)
+                         .eq('is_active', true)
+                         .single()
 }

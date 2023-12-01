@@ -47,7 +47,7 @@ export function Home() {
     fetchUser()
 
     }, [])
-
+    
     const fetchData = async (searchOptions, user) => {
             if (fetchedUser) {
                 try {

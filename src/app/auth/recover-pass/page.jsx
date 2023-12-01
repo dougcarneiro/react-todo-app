@@ -1,15 +1,13 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation'
 import React, { useState, useEffect } from 'react';
-import { getLoggedUser, resetPassword, signUp, singIn } from '@/services/supabase/supabase';
-import { signJWT } from '@/services/jwt';
-import Storage from '@/services/storage';
+import { getLoggedUser, getPassTokenById, resetPassword, updatePassToken } from '@/services/supabase/supabase';
 import SingInUpConfirmButton from '@/components/signInUpConfirmButton';
 import SingInUpButtonSpinner from '@/components/signInUpButtonSpinner';
 import SingInUpDisabledButton from '@/components/signInUpDisabledButton';
 import Spinner from '@/components/Spinner';
 import ErrorFieldText from '@/components/ErrorFieldText';
-import { Icon } from '@iconify/react';
 
 
 export default function SignIn() {
@@ -29,27 +27,35 @@ export default function SignIn() {
     confirmPassword: '',
     });
 
+    const searchParams = useSearchParams()
+
     const [user, setUser] = useState(null);
     const [fetchedUser, setFetchedUser] = useState(false);
-
+    
     useEffect(() => {
-    const fetchUser = async () => {
-        try {
-            const fetchUser = await getLoggedUser()
-            if (fetchUser) {
-                setUser(fetchUser)
-                
-            } else {
-                window.location.href = "/"
+        
+        const fetchUser = async () => {
+            try {
+                const fetchUser = await getLoggedUser()
+                if (fetchUser) {
+                    setUser(fetchUser)
+                } else {
+                    window.location.href = "/"
+                }
+                setFetchedUser(true)
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
             }
-            setFetchedUser(true)
-        } catch (error) {
-            console.error('Erro ao buscar dados:', error);
-        }
     };
-
     fetchUser();
     }, [user]);
+
+    useEffect(() => {
+        if (searchParams.get('recoverPassToken')) {
+        } else {
+            window.location.href = "/"
+        }
+    }, [])
 
 
     const handleChange = (e) => {
@@ -66,9 +72,12 @@ export default function SignIn() {
             showLoadingButton: true,
         })
 
-        const newPassword = formData.password
-        await resetPassword(newPassword)
-
+        const { data } = await getPassTokenById(searchParams.get('recoverPassToken'))
+        if (data) {
+            const newPassword = formData.password
+            await resetPassword(newPassword)
+            await updatePassToken(data)
+        }
         window.location.href = "/"
     }
 
@@ -94,7 +103,7 @@ export default function SignIn() {
 
     return (
         <>  
-        <div className="flex flex-col justify-center px-6 py-12 lg:px-8">
+        <div className="font-montserrat flex flex-col justify-center px-6 py-12 lg:px-8">
        
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                 <h1 className="text-center text-9xl mt-6 font-medium font-satisfy text-violet-800 drop-shadow-lg">
