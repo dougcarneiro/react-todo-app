@@ -1,9 +1,9 @@
 export function formatDate(value, pattern) {
-  const date = new Date(value).toLocaleDateString('pt-br');
+  const date = new Date(value).toISOString().split('T')[0];
 
   if (pattern === 'ymd') {
-    return date.split('/').reverse().join('-');
+    return date
   } else {
-    return date;
+    return date.split('-').reverse().join('/');
   }
 }
