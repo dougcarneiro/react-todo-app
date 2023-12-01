@@ -4,20 +4,20 @@ import FilterDropdown from "./FilterDropdown";
 
 export default function SearchBar({onSearch, options}) {
 
-    const [searchString, setSearchString] = useState('')
     const [searchOptions, setOptions] = useState(options)
 
 
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        setOptions({title: searchOptions.title.trim()})
         onSearch(searchOptions)
-
     }
 
     const handleChange = (e) => {
         setOptions((prevData) => ({
             ...prevData,
+            isSearching: true,
             title: e.target.value
         }))
     }
@@ -28,13 +28,6 @@ export default function SearchBar({onSearch, options}) {
             title: searchOptions.title
         })
     }
-
-    useEffect(() => {
-        setOptions((prevData) => ({
-            ...prevData,
-            isSearching: true
-        }))
-    }, [])
 
     useEffect(() => {
         onSearch(searchOptions)
@@ -59,9 +52,8 @@ export default function SearchBar({onSearch, options}) {
                         className="bg-white border-none rounded-md text-violet-900 text-sm hover:outline-none hover:ring-2 hover:ring-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 block w-full pl-10 p-2.5 placeholder-violet-500 md:text-lg"
                         placeholder="Busque por um afazer..."
                         required={false}
-                        value={searchString.value}
+                        value={searchOptions.title}
                         onChange={handleChange}
-                        onBlur={() => setSearchString(searchString.trim())}
                     />
                 </div>
                 <button

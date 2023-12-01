@@ -35,7 +35,12 @@ export function Home() {
     const [fetchedUser, setFetchedUser] = useState(false);
     const [searchOptions, setSearchOptions] = useState(defaultSearch)
 
+    const [notFoundText, setNotFoundText] = useState('')
+
     const blurMd = 'blur-md'
+
+    const zeroTodosText = 'Você não possui afazeres.'
+    const notFoundTodosText = 'Nenhum afazer encontrado.'
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -55,6 +60,26 @@ export function Home() {
                     setTodos(fetchedTodos)
                     setBlurTodos('')
                     setShowSpinner(false)
+                    if (searchOptions) {
+                        if (searchOptions.isSearching &&
+                            (!searchOptions.title) &&
+                            (!searchOptions.notDone) &&
+                            (!searchOptions.done) &&
+                            (!searchOptions.high) &&
+                            (!searchOptions.medium) &&
+                            (!searchOptions.light) && 
+                            (!searchOptions.normal)) {
+                                setSearchOptions({
+                                    isSearching: false,
+                                })
+                            } if (searchOptions.title) {
+                                setSearchOptions({
+                                    title: searchOptions.title,
+                                    isSearching: true,
+                                })
+                            }
+                    }
+                    setNotFoundText(searchOptions.isSearching ? notFoundTodosText : zeroTodosText)
                 } catch (error) {
                     console.error('Erro ao buscar dados:', error);
                 }
@@ -100,7 +125,7 @@ export function Home() {
     
     return (
         <> 
-        <SearchBar onSearch={onSearch} options={defaultSearch}/>
+        <SearchBar onSearch={onSearch} options={searchOptions}/>
         <div className="container mt-12 font-montserrat mx-auto lg:max-w-screen-lg mb-20 md:mt-0">
             <a href="/">
                 <h1 className="text-center text-8xl mt-6 font-medium font-satisfy text-violet-800 drop-shadow-lg md:text-9xl">
@@ -112,9 +137,10 @@ export function Home() {
             </a>
             {fetchedUser && todos && todos.length == 0 && (
             <h2 className="text-center text-2xl my-12 font-bold text-violet-900">
-                Você não possui afazeres.
+                {notFoundText}
             </h2>
             )}
+            
             <div className="fixed bottom-8 right-8 z-[99] md:absolute md:top-8 md:right-8 md:z-[0]">
                 {user && (<Profile profile={user.profile}/>)}
                 {!user && fetchedUser && (<LogInRedirectButton/>)}

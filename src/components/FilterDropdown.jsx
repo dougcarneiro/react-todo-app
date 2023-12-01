@@ -18,6 +18,7 @@ export default function FilterDropdown({options, checkBoxChange}) {
         const {name, checked} = event.target
         setOptions((prevData) => ({
             ...prevData,
+            isSearching: true,
             [name]: checked
         }));
         
