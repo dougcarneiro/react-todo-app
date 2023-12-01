@@ -217,10 +217,11 @@ export async function updatePassToken(token) {
                         .eq('id', token.id)
 }
 
-export async function getPassTokenById(id) {
+export async function checkToken(id, profile) {
     return await supabase.from('PasswordToken')
                          .select()
                          .eq('id', id)
                          .eq('is_active', true)
+                         .eq('profile_id', profile.id)
                          .single()
 }

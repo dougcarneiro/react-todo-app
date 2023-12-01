@@ -2,7 +2,7 @@
 
 import { useSearchParams } from 'next/navigation'
 import React, { useState, useEffect } from 'react';
-import { getLoggedUser, getPassTokenById, resetPassword, updatePassToken } from '@/services/supabase/supabase';
+import { getLoggedUser, checkToken, resetPassword, updatePassToken } from '@/services/supabase/supabase';
 import SingInUpConfirmButton from '@/components/signInUpConfirmButton';
 import SingInUpButtonSpinner from '@/components/signInUpButtonSpinner';
 import SingInUpDisabledButton from '@/components/signInUpDisabledButton';
@@ -72,7 +72,8 @@ export default function SignIn() {
             showLoadingButton: true,
         })
 
-        const { data } = await getPassTokenById(searchParams.get('recoverPassToken'))
+        const { data } = await checkToken(searchParams.get('recoverPassToken'),
+                                          user.profile)
         if (data) {
             const newPassword = formData.password
             await resetPassword(newPassword)
