@@ -130,7 +130,7 @@ async function update(todo, isCreating) {
   const loggedUser = await getLoggedUser()
 
   if (isCreating) {
-      await create(todo, loggedUser.profile)
+      await create(todo, loggedUser ? loggedUser.profile : null)
     } else {
       if (loggedUser) {
         try {
