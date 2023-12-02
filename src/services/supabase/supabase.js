@@ -205,6 +205,10 @@ export async function resetPassword(newPassword) {
 
 
 export async function createPassToken(profile_id) {
+    await supabase.from('PasswordToken')
+                  .update({'is_active': false})
+                  .eq('profile_id', profile_id)
+
     return await supabase.from('PasswordToken')
                          .insert({ profile_id })
                          .select()
@@ -213,8 +217,11 @@ export async function createPassToken(profile_id) {
 
 export async function updatePassToken(token) {
     await supabase.from('PasswordToken')
-                        .update({'is_active': false})
-                        .eq('id', token.id)
+                  .update({
+                    'is_active': false,
+                    'is_used': true,
+                })
+                  .eq('id', token.id)
 }
 
 export async function checkToken(id, profile) {
@@ -222,6 +229,7 @@ export async function checkToken(id, profile) {
                          .select()
                          .eq('id', id)
                          .eq('is_active', true)
+                         .eq('is_used', false)
                          .eq('profile_id', profile.id)
                          .single()
 }
