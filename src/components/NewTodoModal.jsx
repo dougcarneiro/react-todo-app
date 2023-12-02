@@ -26,9 +26,11 @@ export default function NewTodoModal() {
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        className='overflow-y-auto'
         BackdropProps={{
           style: { backdropFilter: 'blur(4px)' },
-      }}
+        }}
+  
       >
         <Box className="max-w-md mt-10 mx-auto my-auto bg-white font-montserrat border shadow-sm rounded-xl">
         <div className="flex flex-col bg-white border-none shadow-sm rounded-xl">
@@ -37,7 +39,7 @@ export default function NewTodoModal() {
                 <button
                 type="button"
                 onClick={handleClose}
-                className="inline-flex flex-shrisnk-0 justify-center items-center h-8 w-8 rounded-md text-violet-500 hover:text-violet-400 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white transition-all text-sm"
+                className="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-md text-violet-500 hover:text-violet-400 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white transition-all text-sm"
                 >
                 <span className="sr-only">Close</span>
                 <svg

@@ -24,6 +24,7 @@ export default function EditTodoModal({ todo }) {
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        className='overflow-y-auto'
         BackdropProps={{
           style: { backdropFilter: 'blur(4px)' },
       }}

@@ -172,7 +172,7 @@ export default function Profile({profile}) {
                     </dl>
                 </div>
                 </div>
-                <div className="fixed bottom-8 mx-14">
+                <div className="flex justify-center align-bottom my-10">
                 <button
                     id="logout-button"
                     type="button"
