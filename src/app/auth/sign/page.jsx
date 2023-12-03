@@ -113,9 +113,9 @@ export default function SignIn() {
            if (error) {
             return
            } else {
-            const { user, error } = await signUp(formData)
-            if (user) {
-                setUser(user)
+            const { created_user, error } = await signUp(formData)
+            if (created_user) {
+                setUser(created_user)
             } else {
                 setErrorFieldClass('border-red-500 bg-red-100')
                 setEmailErrorField(true)

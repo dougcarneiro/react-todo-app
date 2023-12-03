@@ -65,7 +65,6 @@ export default function Profile({profile}) {
 
     const list = () => (
         <Box
-        sx={{ width: 315 }}
         role="presentation"
         onKeyDown={toggleDrawer(false)}
         >

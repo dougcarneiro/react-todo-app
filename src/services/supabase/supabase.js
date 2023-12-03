@@ -44,24 +44,22 @@ export async function updateProfile(profile) {
 }
 
 // USER MANAGEMENT SUPABASE PROVIDED
-export async function signUp(user) {
-    const existingUser = await getProfileByEmail(user.email)
+export async function signUp(newUser) {
+    const existingUser = await getProfileByEmail(newUser.email)
     if (existingUser.data) {
         return false
     }
-    const { data, error } = await supabase.auth.signUp({ ...user })
+    const { data, error } = await supabase.auth.signUp({ ...newUser })
     const created_user = data.user
     if (created_user) {
-        const user = data
         const profile = {
-            name: user.name,
+            name: newUser.name,
             user_id: created_user.id,
-            email: user.email,
-            password: created_user.encrypted_password
+            email: newUser.email,
         }
         const { data, error } = await createProfile(profile)
-        user.profile = data
-        return { user, error }
+        created_user.profile = data
+        return { created_user, error }
     } else {
         return error
     }
