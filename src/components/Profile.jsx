@@ -66,6 +66,7 @@ export default function Profile({profile}) {
     const list = () => (
         <Box
         role="presentation"
+        sx={{width: 350}}
         onKeyDown={toggleDrawer(false)}
         >
             {showSpinner && (
@@ -76,35 +77,34 @@ export default function Profile({profile}) {
             <div
                 className={`${blurProfile} font-montserrat bg-white`}
             >
-                 
+            <div className="bg-white shadow rounded-lg border overflow-x-auto h-screen">
                 <div className="flex justify-between items-center py-3 px-4 border-b dark:border-violet-700">
-                <h3 className="font-satisfy font-bold text-2xl text-violet-800 dark:text-white">
-                    Meu Perfil
-                </h3>
-                <button
-                    type="button"
-                    onClick={toggleDrawer(false)}
-                    className="flex justify-center items-center w-7 h-7 text-sm font-semibold rounded-full border border-transparent text-violet-800 hover:bg-violet-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-violet-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-violet-600"
-                >
-                    <span className="sr-only">Close modal</span>
-                    <svg
-                    className="flex-shrink-0 w-4 h-4"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={24}
-                    height={24}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    <h3 className="font-satisfy font-bold text-2xl text-violet-800 dark:text-white">
+                        Meu Perfil
+                    </h3>
+                    <button
+                        type="button"
+                        onClick={toggleDrawer(false)}
+                        className="flex justify-center items-center w-7 h-7 text-sm font-semibold rounded-full border border-transparent text-violet-800 hover:bg-violet-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-violet-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-violet-600"
                     >
-                    <path d="M18 6 6 18" />
-                    <path d="m6 6 12 12" />
-                    </svg>
-                </button>
+                        <span className="sr-only">Close modal</span>
+                        <svg
+                        className="flex-shrink-0 w-4 h-4"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width={24}
+                        height={24}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        >
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
                 </div>
-                <div className="bg-white overflow-hidden shadow rounded-lg border">
                 <div className="px-4 py-5 sm:px-6">
                     <h3
                     id="profile-user-first-name"
@@ -116,78 +116,78 @@ export default function Profile({profile}) {
                 </div>
                 <div className="border-t border-violet-200 px-4 py-5 sm:p-0">
                     <dl className="sm:divide-y sm:divide-violet-200">
-                    <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-violet-500">
-                        Nome Completo
-                        </dt>
-                        <dd
-                        id="profile-user-name"
-                        className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
-                        >{userName}</dd>
-                    </div>
-                    <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-violet-500">Email</dt>
-                        <dd
-                        id="profile-user-email"
-                        className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
-                        >{profile.email}</dd>
-                    </div>
-                    <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-violet-500">
-                        Total de Afazeres criados:
-                        </dt>
-                        <dd
-                        id="profile-todo-count"
-                        className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
-                        >{createdTodos}</dd>
-                    </div>
-                    <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-violet-500">
-                        Total de Afazeres completos:
-                        </dt>
-                        <dd
-                        id="profile-completed-count"
-                        className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
-                        >{completedTodos}</dd>
-                    </div>
-                    <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-violet-500">
-                        Total de Afazeres pendentes:
-                        </dt>
-                        <dd
-                        id="profile-uncompleted-count"
-                        className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
-                        >{unCompletedTodos}</dd>
-                    </div>
-                    <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-violet-500">
-                        Membro desde:
-                        </dt>
-                        <dd
-                        id="profile-created-at"
-                        className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
-                        >{userCreatedAt}</dd>
-                    </div>
+                        <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-violet-500">
+                            Nome Completo
+                            </dt>
+                            <dd
+                            id="profile-user-name"
+                            className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
+                            >{userName}</dd>
+                        </div>
+                        <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-violet-500">Email</dt>
+                            <dd
+                            id="profile-user-email"
+                            className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
+                            >{profile.email}</dd>
+                        </div>
+                        <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-violet-500">
+                            Total de Afazeres criados:
+                            </dt>
+                            <dd
+                            id="profile-todo-count"
+                            className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
+                            >{createdTodos}</dd>
+                        </div>
+                        <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-violet-500">
+                            Total de Afazeres completos:
+                            </dt>
+                            <dd
+                            id="profile-completed-count"
+                            className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
+                            >{completedTodos}</dd>
+                        </div>
+                        <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-violet-500">
+                            Total de Afazeres pendentes:
+                            </dt>
+                            <dd
+                            id="profile-uncompleted-count"
+                            className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
+                            >{unCompletedTodos}</dd>
+                        </div>
+                        <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-violet-500">
+                            Membro desde:
+                            </dt>
+                            <dd
+                            id="profile-created-at"
+                            className="mt-1 text-sm text-violet-800 sm:mt-0 sm:col-span-2"
+                            >{userCreatedAt}</dd>
+                        </div>
                     </dl>
                 </div>
-                </div>
-                <div className="flex justify-center align-bottom my-10">
-                <button
-                    id="logout-button"
-                    type="button"
-                    onClick={logoutUser}
-                    className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-violet-500 text-white hover:bg-violet-600 disabled:opacity-50 disabled:pointer-events-none"
-                >
-                    <Icon 
-                        icon="mdi:logout"
-                        className="text-xl text-violet-200"
-                        rotate="180deg"
-                    />
-                        Sair da minha conta
-                </button>
-                </div>
             </div>
-        </Box>
+        <div className="absolute bottom-8 -right-0 transform -translate-x-2/3 md:-right-9">
+            <button
+                id="logout-button"
+                type="button"
+                onClick={logoutUser}
+                className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-violet-500 text-white hover:bg-violet-600 disabled:opacity-50 disabled:pointer-events-none"
+            >
+                <Icon 
+                    icon="mdi:logout"
+                    className="text-xl text-violet-200"
+                    rotate="180deg"
+                />
+                <span className="font-montserrat hidden md:block">Logout</span> 
+            </button>
+        </div>
+        </div>
+    </Box>
     );
 
     return (
@@ -197,7 +197,6 @@ export default function Profile({profile}) {
                     onClick={toggleDrawer(true)}>
                 </ProfileButton>
             <Drawer
-            
                 anchor={'right'}
                 open={drawerState}
                 onClose={toggleDrawer(false)}
