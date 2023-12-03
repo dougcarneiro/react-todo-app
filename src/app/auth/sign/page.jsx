@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getLoggedUser, passwordRecovery, signUp, singIn } from '@/services/supabase/supabase';
 import { signJWT } from '@/services/jwt';
 import SingInUpConfirmButton from '@/components/signInUpConfirmButton';
@@ -12,20 +12,19 @@ import { Icon } from '@iconify/react';
 
 
 export default function SignIn() {
-    const [state, setState] = useState({
-        showLogInButton: true,
-        showForgotPassButton: true,
-        showSignInButton: false,
-        showName: false,
-        showConfirmPass: false,
-        showGoToSignInButton: true,
-        showSignUpButton: false,
-        showResetPassButton: false,
-        showBackButton: false,
-        
-      });
 
-    const defaultFieldBg = 'border-violet-200'
+    const defaultFieldStyle = 'border-violet-200'
+    const defaultFieldErrorStyle = 'border-red-500 bg-red-100'
+
+    const [showLogInButton, setShowLogInButton] = useState(true)
+    const [showForgotPassButton, setShowForgotPassButton] = useState(true)
+    const [showName, setShowName] = useState(false)
+    const [showConfirmPass, setShowConfirmPass] = useState(false)
+    const [showGoToSignInButton, setShowGoToSignInButton] = useState(true)
+    const [showSignUpButton, setShowSignUpButton] = useState(false)
+    const [showResetPassButton, setShowResetPassButton] = useState(false)
+    const [showBackButton, setShowBackButton] = useState(false)
+    
 
     const [showInvalidCredentialsAlert, setShowInvalidCredentialsAlert] = useState(false)
     const [showSentResetPassAlert, setShowSentResetPassAlert] = useState(false)
@@ -33,17 +32,25 @@ export default function SignIn() {
     const [showPassField, setShowPassField] = useState(true);
     const [showLoadingButton, setShowLoadingButton] = useState(false);
     const [showDisabledConfirm, setShowDisabledConfirm] = useState(false);
-    const [showDisableEnter, setShowDisableEnter] = useState(false);
-    const [errorFieldClass, setErrorFieldClass] = useState('border-violet-200')
+
+    const [emailStyle, setEmailStyle] = useState(defaultFieldStyle)
     const [emailErrorField, setEmailErrorField] = useState(false)
 
+    const [passStyle, setPassStyle] = useState(defaultFieldStyle)
+    const [confirmPassStyle, setConfirmPassStyle] = useState(defaultFieldStyle)
+    const [passLengthErrorField, setPassLengthErrorField] = useState(false)
+    const [passDiffErrorField, setPassDiffErrorField] = useState(false)
 
-    let [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    });
+    const [formData, setFormData] = useState(null);
+
+    function clearFormData() {
+        setFormData({
+            name: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+        })
+    }
 
     const [user, setUser] = useState(null);
     const [fetchedUser, setFetchedUser] = useState(false);
@@ -65,15 +72,39 @@ export default function SignIn() {
     fetchUser();
     }, [user]);
 
+    useEffect(() => {
+        clearFormData()
+        if (!showBackButton) {
+            setPassStyle(defaultFieldStyle)
+            setConfirmPassStyle(defaultFieldStyle)
+            setEmailStyle(defaultFieldStyle)
+            setPassLengthErrorField(false)
+            setEmailErrorField(false)
+            setPassDiffErrorField(false)
+            setShowLogInButton(true)
+            setShowPassField(true)
+            setShowGoToSignInButton(true)
+            setShowForgotPassButton(true)
+            setShowResetPassButton(false)
+            setShowSentResetPassAlert(false)
+            setShowSignUpButton(false)
+            setShowBackButton(false)
+            setShowConfirmPass(false)
+            setShowName(false)
+            setShowDisabledConfirm(false)
+        }
+
+    }, [showBackButton])
+
     async function handleSignUp() {
+        setShowForgotPassButton(false)
+        setShowGoToSignInButton(false)
         setShowInvalidCredentialsAlert(false)
-        setState({
-            showBackButton: true,
-            showSignUpButton: true,
-            showName: true,
-            showConfirmPass: true,
-            showLogInButton: false,
-        })
+        setShowBackButton(true)
+        setShowSignUpButton(true)
+        setShowName(true)
+        setShowConfirmPass(true)
+        setShowLogInButton(false)
     }
 
     const handleChange = (e) => {
@@ -84,78 +115,86 @@ export default function SignIn() {
     }
 
     async function handleForgetPass() {
+        setShowResetPassButton(true)
         setShowInvalidCredentialsAlert(false)
-        setState({
-            showBackButton: true,
-            showLogInButton: false,
-            showGoToSignInButton: false,
-            showResetPassButton: true,
-        })
+        setShowBackButton(true)
+        setShowLogInButton(false)
+        setShowGoToSignInButton(false)
         setShowPassField(false)
     }
 
     async function handleSubmit(event) {
-        event.preventDefault()
         let error
+        event.preventDefault()
         setShowInvalidCredentialsAlert(false)
-        setShowSentResetPassAlert(false)
-        setState({
-            showResetPassButton: false,
-            showLogInButton: false,
-            showSignInButton: false,
-            showForgotPassButton: false,
-        })
         setShowLoadingButton(true)
-        const isSignUp = formData.name == '' ? false : true
-        const isSignIn = formData.password != '' ? true : false
+        const isSignUp = showSignUpButton ? true : false
+        const isSignIn = showLogInButton ? true : false
         if (isSignUp) {
-           error = checkPasswordsDiff(formData.password, formData.confirmPassword)
-           if (error) {
-            return
-           } else {
+            setShowSignUpButton(false)
             const { created_user, error } = await signUp(formData)
             if (created_user) {
                 setUser(created_user)
             } else {
-                setErrorFieldClass('border-red-500 bg-red-100')
+                setEmailStyle(defaultFieldErrorStyle)
                 setEmailErrorField(true)
                 setShowLoadingButton(false)
                 setShowDisabledConfirm(true)
-                
                 }
-           }
         } else if (isSignIn) {
+            setShowLogInButton(false)
             const { data, error } = await singIn(formData.email, formData.password)
             if (!data) {
                 setShowInvalidCredentialsAlert(true)
                 setShowLoadingButton(false)
-                setState({
-                    showLogInButton: true,
-                    showGoToSignInButton: true,
-                    showForgotPassButton: true,
-                })
+                setShowLogInButton(true)
+                setShowGoToSignInButton(true)
+                setShowForgotPassButton(true)
             } else {
                 setUser(data)
             }
         } else {
+            setShowResetPassButton(false)
             const email = formData.email
-            await passwordRecovery(email)
+            try {
+                await passwordRecovery(email)
+            } catch (err) {
+                // pass
+            }
             setShowSentResetPassAlert(true)
             setShowLoadingButton(false)
-            setState({showBackButton: true})
+            setShowBackButton(true)
         }
     }
 
     function checkPasswordsDiff(password, confirmPassword) {
-        let error = true
+        let error = false
+        if (!confirmPassword || !password) {
+            return
+        }
         if (!password || !password) {
-            return error
+            error = true
         }
         if (password !== confirmPassword) {
-            return error
+            error = true
         }
-        error = false
-        return error
+        if (error) {
+            setPassDiffErrorField(true)
+            setConfirmPassStyle(defaultFieldErrorStyle)
+            setShowSignUpButton(false)
+            setShowDisabledConfirm(true)
+        }
+    }
+
+    function checkPasswordLength(password) {
+        if (password) {
+            if (password.length < 6) {
+                setPassLengthErrorField(true)
+                setPassStyle(defaultFieldErrorStyle)
+                setShowSignUpButton(false)
+                setShowDisabledConfirm(true)
+            }
+        }
     }
 
     function handleBlur() {
@@ -166,6 +205,10 @@ export default function SignIn() {
           confirmPassword: formData.confirmPassword.trim(),
           })
         )
+        if (showSignUpButton) {
+            checkPasswordLength(formData.password)
+            checkPasswordsDiff(formData.password, formData.confirmPassword)
+        }
       }
 
     async function generateToken(data) {
@@ -177,20 +220,9 @@ export default function SignIn() {
 
     return (
         <>  
-         {state.showBackButton && (<button
-            onClick={() => {
-                setShowPassField(true)
-                setShowSentResetPassAlert(false)
-                setState({
-                    showForgotPassButton: true,
-                    showSignUpButton: false,
-                    showLogInButton: true,
-                    showSignInButton: false,
-                    showGoToSignInButton: true,
-                    showBackButton: false,
-                })
-            }}
+         {showBackButton && (<button
             type="button"
+            onClick={() => setShowBackButton(false)}
             className="absolute top-8 left-8 inline-flex py-2 px-2 justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-violet-500 text-white hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition-all text-sm md:py-3 md:px-4"
             >
             <Icon 
@@ -219,7 +251,7 @@ export default function SignIn() {
             
             {fetchedUser && !user && (<div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
             <form className="space-y-6" action="#" onSubmit={handleSubmit}>
-                {state.showName &&(<div id="name-div">
+                {showName &&(<div id="name-div">
                 <label
                     htmlFor="name"
                     className="block text-sm font-medium leading-6 text-violet-900"
@@ -249,36 +281,36 @@ export default function SignIn() {
                 >
                     Email
                 </label>
-                <div className="mt-2">
-                    <input
-                    required={true}
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    onFocus={() => {
-                        setErrorFieldClass(defaultFieldBg)
-                        setShowDisabledConfirm(false)
-                        if (emailErrorField) {
-                            setShowSignUpButton(true)
-                            setEmailErrorField(false)}}
+                    <div className="mt-2">
+                        <input
+                        required={true}
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        onFocus={() => {
+                            if (emailErrorField) {
+                                setEmailStyle(defaultFieldStyle)
+                                setShowDisabledConfirm(false)
+                                setShowSignUpButton(true)
+                                setEmailErrorField(false)}}
+                            }
+                        autoComplete="email"
+                        className={`mt-1 mb-1 w-full py-2.5 px-4 block border text-violet-800 ${emailStyle} rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-violet-500`}
+                        />
+                        {
+                            emailErrorField && (
+                                <ErrorFieldText text={'Já existe um usuário cadastrado com esse email.'}/>
+                            )
                         }
-                    autoComplete="email"
-                    className={`mt-1 mb-1 w-full py-2.5 px-4 block border text-violet-800 ${errorFieldClass} rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-violet-500`}
-                    />
-                    {
-                        emailErrorField && (
-                            <ErrorFieldText text={'Já existe um usuário cadastrado com esse email.'}/>
-                        )
-                    }
-   
-                </div>
+    
+                    </div>
                 </div>
                 <div id="password-div">
-                    {showPassField && (
-                    <>
+                {showPassField && (
+                <>
                     <div className="flex items-center justify-between">
                         <label
                         htmlFor="password"
@@ -286,7 +318,7 @@ export default function SignIn() {
                         >
                         Senha
                         </label>
-                        {state.showForgotPassButton && (<div className="text-sm">
+                        {showForgotPassButton && (<div className="text-sm">
                         <a
                             href="#"
                             id="password-reset-button"
@@ -310,20 +342,24 @@ export default function SignIn() {
                         onBlur={() => {
                             handleBlur()
                         }}
+                        onFocus={() => {
+                            if (passLengthErrorField) {
+                                setShowDisabledConfirm(false)
+                                setShowSignUpButton(true)
+                                setPassStyle(defaultFieldStyle)
+                                setPassLengthErrorField(false)
+                            }
+                        }}
                         autoComplete="current-password"
-                        className="mt-1 mb-1 w-full py-1.5 px-4 block border text-violet-800 border-violet-200 rounded-md text-3xl focus:outline-none focus:ring-2 focus:ring-violet-500"
+                        className={`mt-1 mb-1 w-full py-1.5 px-4 block border text-violet-800 ${passStyle} rounded-md text-3xl focus:outline-none focus:ring-2 focus:ring-violet-500`}
                         />
-                        <p
-                        id="pass-length-error-msg"
-                        className="hidden mt-0 text-left text-sm text-red-600"
-                        >
-                        A senha precisa ter ao menos seis caracteres.
-                        </p>
-    
+                            {passLengthErrorField && (
+                            <ErrorFieldText text={'A senha precisa ter ao menos seis caracteres.'}/>)}
+
                     </div>
                     </>
                     )}
-                    {state.showConfirmPass && (<div className="mt-5">
+                    {showConfirmPass && (<div className="mt-5">
                         <div className="flex items-center justify-between">
                             <label
                             htmlFor="password"
@@ -342,40 +378,44 @@ export default function SignIn() {
                             value={formData.confirmPassword}
                             onChange={handleChange}
                             onBlur={handleBlur}
+                            onFocus={() => {
+                                setPassDiffErrorField(false)
+                                setConfirmPassStyle(defaultFieldStyle)
+                                if (!passLengthErrorField) {
+                                    setShowSignUpButton(true)
+                                    setShowDisabledConfirm(false)
+                                }
+                            }}
                             autoComplete="confirm-password"
-                            className="mt-1 mb-1 w-full py-1.5 px-4 block border text-violet-800 border-violet-200 rounded-md text-3xl focus:outline-none focus:ring-2 focus:ring-violet-500"
+                            className={`mt-1 mb-1 w-full py-1.5 px-4 block border text-violet-800 ${confirmPassStyle} rounded-md text-3xl focus:outline-none focus:ring-2 focus:ring-violet-500`}
                             />
-                            <p
-                            id="pass-error-msg"
-                            className="hidden mt-0 text-left text-sm text-red-600"
-                            >
-                            As senhas precisam ser iguais.
-                            </p>
+                            {passDiffErrorField && (
+                            <ErrorFieldText text={'As senhas precisam ser iguais.'}/>)}
                         </div>
                     </div>)}
-                </div>
                 {showInvalidCredentialsAlert && (
-                <div
-                    id="invalid-credentials-alert"
-                    className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                    role="alert"
-                    >
-                    <strong className="font-bold px-1">Credenciais inválidas!</strong>
-                    <span className="block sm:inline px-1">Se certifique que você informou os dados corretos.</span>
-                    <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
-                        <svg
-                        className="fill-current h-6 w-6 text-red-500"
-                        role="button"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        onClick={() => setShowInvalidCredentialsAlert(false)}
+                    <div
+                        id="invalid-credentials-alert"
+                        className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                        role="alert"
                         >
-                        <title>Fechar</title>
-                        <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
-                        </svg>
-                    </span>
-                </div>)}
-                {showSentResetPassAlert && (
+                        <strong className="font-bold px-1">Credenciais inválidas!</strong>
+                        <span className="block sm:inline px-1">Se certifique que você informou os dados corretos.</span>
+                        <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+                            <svg
+                            className="fill-current h-6 w-6 text-red-500"
+                            role="button"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            onClick={() => setShowInvalidCredentialsAlert(false)}
+                            >
+                            <title>Fechar</title>
+                            <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+                            </svg>
+                        </span>
+                        </div>)}
+                </div>
+            {showSentResetPassAlert && (
                 <div
                     id="sent-reset-pass-alert"
                     className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative"
@@ -387,20 +427,15 @@ export default function SignIn() {
                 <div id="sign-in-button-div" className="">
                 {showLoadingButton && (
                     <SingInUpButtonSpinner/>)}
-                {state.showLogInButton && (
+                {showLogInButton && (
                     <SingInUpConfirmButton 
                         buttonTitle={'Entrar'}/>
                     )}
-                {showDisableEnter && (
-                    <SingInUpDisabledButton 
-                        buttonTitle={'Entrar'}
-                        />)}
-
-                {state.showSignUpButton && (
+                {showSignUpButton && (
                 <SingInUpConfirmButton 
                     buttonTitle={'Confirmar'}/>
                 )}
-                {state.showResetPassButton && (
+                {showResetPassButton && (
                 <SingInUpConfirmButton 
                     buttonTitle={'Solicitar recuperação de senha'}/>
                 )}
@@ -408,7 +443,7 @@ export default function SignIn() {
                     <SingInUpDisabledButton buttonTitle={'Confirmar'}/>)}
                 </div>
             </form>
-            {state.showGoToSignInButton && (<div id="sign-up-div">
+            {showGoToSignInButton && (<div id="sign-up-div">
                 <p className="mt-10 text-center text-sm text-violet-600">
                 Primeira vez acessando?
                 <a

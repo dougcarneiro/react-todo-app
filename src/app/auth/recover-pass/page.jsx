@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation'
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getLoggedUser, checkToken, resetPassword, updatePassToken } from '@/services/supabase/supabase';
 import SingInUpConfirmButton from '@/components/signInUpConfirmButton';
 import SingInUpButtonSpinner from '@/components/signInUpButtonSpinner';
@@ -10,17 +10,19 @@ import Spinner from '@/components/Spinner';
 import ErrorFieldText from '@/components/ErrorFieldText';
 
 
-export default function SignIn() {
+export default function RecoverPassForm() {
 
-    const defaultFieldBg = 'border-violet-200'
+    const defaultFieldStyle = 'border-violet-200'
+    const defaultFieldErrorStyle = 'border-red-500 bg-red-100'
 
-    const [state, setState] = useState({
-        errorFieldClass: defaultFieldBg,
-        showConfirmButton: true,
-        showLoadingButton: false,
-        showDisabledConfirm: false,
-        
-      });
+    const [passStyle, setPassStyle] = useState(defaultFieldStyle)
+    const [confirmPassStyle, setConfirmPassStyle] = useState(defaultFieldStyle)
+    const [passLengthErrorField, setPassLengthErrorField] = useState(false)
+    const [passDiffErrorField, setPassDiffErrorField] = useState(false)
+
+    const [showConfirmButton, setShowConfirmButton] = useState(true)
+    const [showLoadingButton, setShowLoadingButton] = useState(false)
+    const [showDisabledConfirm, setShowDisabledConfirm] = useState(false)
 
     let [formData, setFormData] = useState({
     password: '',
@@ -40,7 +42,7 @@ export default function SignIn() {
                 if (fetchUser) {
                     setUser(fetchUser)
                 } else {
-                    window.location.href = "/"
+                    // window.location.href = "/"
                 }
                 setFetchedUser(true)
             } catch (error) {
@@ -53,7 +55,7 @@ export default function SignIn() {
     useEffect(() => {
         if (searchParams.get('recoverPassToken')) {
         } else {
-            window.location.href = "/"
+            // window.location.href = "/"
         }
     }, [])
 
@@ -67,10 +69,8 @@ export default function SignIn() {
 
     async function handleSubmit(event) {
         event.preventDefault()
-        setState({
-            showConfirmButton: false,
-            showLoadingButton: true,
-        })
+        setShowConfirmButton(false)
+        setShowLoadingButton(true)
 
         const { data } = await checkToken(searchParams.get('recoverPassToken'),
                                           user.profile)
@@ -83,23 +83,42 @@ export default function SignIn() {
     }
 
     function checkPasswordsDiff(password, confirmPassword) {
-        let error = true
+        let error = false
+        if (!confirmPassword || !password) {
+            return
+        }
         if (!password || !password) {
-            return error
+            error = true
         }
         if (password !== confirmPassword) {
-            return error
+            error = true
         }
-        error = false
-        return error
+        if (error) {
+            setPassDiffErrorField(true)
+            setConfirmPassStyle(defaultFieldErrorStyle)
+            setShowConfirmButton(false)
+            setShowDisabledConfirm(true)
+        }
+    }
+
+    function checkPasswordLength(password) {
+        if (password) {
+            if (password.length < 6) {
+                setPassLengthErrorField(true)
+                setPassStyle(defaultFieldErrorStyle)
+                setShowConfirmButton(false)
+                setShowDisabledConfirm(true)
+            }
+        }
     }
 
     function handleBlur() {
         setFormData(() => ({
           password: formData.password.trim(),
           confirmPassword: formData.confirmPassword.trim(),
-          })
-        )
+            }))
+        checkPasswordLength(formData.password)
+        checkPasswordsDiff(formData.password, formData.confirmPassword)
       }
 
     return (
@@ -147,15 +166,19 @@ export default function SignIn() {
                         onBlur={() => {
                             handleBlur()
                         }}
+                        onFocus={() => {
+                            if (passLengthErrorField) {
+                                setShowDisabledConfirm(false)
+                                setShowConfirmButton(true)
+                                setPassStyle(defaultFieldStyle)
+                                setPassLengthErrorField(false)
+                            }
+                        }}
                         autoComplete="current-password"
-                        className="mt-1 mb-1 w-full py-1.5 px-4 block border text-violet-800 border-violet-200 rounded-md text-3xl focus:outline-none focus:ring-2 focus:ring-violet-500"
+                        className={`mt-1 mb-1 w-full py-1.5 px-4 block border text-violet-800 ${passStyle} rounded-md text-3xl focus:outline-none focus:ring-2 focus:ring-violet-500`}
                         />
-                        <p
-                        id="pass-length-error-msg"
-                        className="hidden mt-0 text-left text-sm text-red-600"
-                        >
-                        A senha precisa ter ao menos seis caracteres.
-                        </p>
+                         {passLengthErrorField && (
+                            <ErrorFieldText text={'A senha precisa ter ao menos seis caracteres.'}/>)}
     
                     </div>
                     </>
@@ -178,28 +201,32 @@ export default function SignIn() {
                             value={formData.confirmPassword}
                             onChange={handleChange}
                             onBlur={handleBlur}
+                            onFocus={() => {
+                                setPassDiffErrorField(false)
+                                setConfirmPassStyle(defaultFieldStyle)
+                                if (!passLengthErrorField) {
+                                    setShowConfirmButton(true)
+                                    setShowDisabledConfirm(false)
+                                }
+                            }}
                             autoComplete="confirm-password"
-                            className="mt-1 mb-1 w-full py-1.5 px-4 block border text-violet-800 border-violet-200 rounded-md text-3xl focus:outline-none focus:ring-2 focus:ring-violet-500"
+                            className={`mt-1 mb-1 w-full py-1.5 px-4 block border text-violet-800 ${confirmPassStyle} rounded-md text-3xl focus:outline-none focus:ring-2 focus:ring-violet-500`}
                             />
-                            <p
-                            id="pass-error-msg"
-                            className="hidden mt-0 text-left text-sm text-red-600"
-                            >
-                            As senhas precisam ser iguais.
-                            </p>
+                            {passDiffErrorField && (
+                            <ErrorFieldText text={'As senhas precisam ser iguais.'}/>)}
                         </div>
                     </div>
                 </div>
 
                 <div id="sign-in-button-div" className="">
-                {state.showLoadingButton && (
+                {showLoadingButton && (
                     <SingInUpButtonSpinner/>)}
 
-                {state.showConfirmButton && (
+                {showConfirmButton && (
                     <SingInUpConfirmButton 
                         buttonTitle={'Confirmar'}/>
                 )}
-                {state.showDisabledConfirm && (
+                {showDisabledConfirm && (
                     <SingInUpDisabledButton buttonTitle={'Confirmar'}/>)}
                 </div>
             </form>
