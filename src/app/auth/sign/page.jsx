@@ -9,6 +9,7 @@ import SingInUpDisabledButton from '@/components/signInUpDisabledButton';
 import Spinner from '@/components/Spinner';
 import ErrorFieldText from '@/components/ErrorFieldText';
 import { Icon } from '@iconify/react';
+import { cleanWhitespaces } from '../../../utils/string'
 
 
 export default function SignIn() {
@@ -199,7 +200,7 @@ export default function SignIn() {
 
     function handleBlur() {
         setFormData(() => ({
-          name: formData.name.trim(),
+          name: cleanWhitespaces(formData.name.trim()),
           email: formData.email.trim(),
           password: formData.password.trim(),
           confirmPassword: formData.confirmPassword.trim(),

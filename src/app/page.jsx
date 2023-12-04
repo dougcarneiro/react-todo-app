@@ -2,13 +2,13 @@
 
 import Spinner from "@/components/Spinner";
 import TodoCard from "@/components/TodoCard";
-import Todos from "@/lib/todos";
+import Todos from "@/utils/todos";
 
 import { useEffect, useState } from 'react';
-import { onStatusChangeContext } from "./hooks/OnStatusChangeContext";
-import { onTodoAddedContext } from "./hooks/OnTodoAddedContext";
-import { onTodoEditedContext } from "./hooks/OnTodoEditedContext";
-import { onTodoRemoveContext } from "./hooks/OnTodoRemoveContext";
+import { onStatusChangeContext } from "../hooks/OnStatusChangeContext";
+import { onTodoAddedContext } from "../hooks/OnTodoAddedContext";
+import { onTodoEditedContext } from "../hooks/OnTodoEditedContext";
+import { onTodoRemoveContext } from "../hooks/OnTodoRemoveContext";
 import LogInRedirectButton from "@/components/LogInRedirectButton";
 import NewTodoModal from "@/components/NewTodoModal";
 import Profile from "@/components/Profile";
@@ -54,37 +54,37 @@ export function Home() {
     }, [])
     
     const fetchData = async (searchOptions, user) => {
-            if (fetchedUser) {
-                try {
-                    const fetchedTodos = await Todos.load(searchOptions, user)
-                    setTodos(fetchedTodos)
-                    setBlurTodos('')
-                    setShowSpinner(false)
-                    if (searchOptions) {
-                        if (searchOptions.isSearching &&
-                            (!searchOptions.title) &&
-                            (!searchOptions.notDone) &&
-                            (!searchOptions.done) &&
-                            (!searchOptions.high) &&
-                            (!searchOptions.medium) &&
-                            (!searchOptions.light) && 
-                            (!searchOptions.normal)) {
-                                setSearchOptions({
-                                    isSearching: false,
-                                })
-                            } if (searchOptions.title) {
-                                setSearchOptions({
-                                    title: searchOptions.title,
-                                    isSearching: true,
-                                })
-                            }
-                    }
-                    setNotFoundText(searchOptions.isSearching ? notFoundTodosText : zeroTodosText)
-                } catch (error) {
-                    console.error('Erro ao buscar dados:', error);
+        if (fetchedUser) {
+            try {
+                const fetchedTodos = await Todos.load(searchOptions, user)
+                setTodos(fetchedTodos)
+                setBlurTodos('')
+                setShowSpinner(false)
+                if (searchOptions) {
+                    if (searchOptions.isSearching &&
+                        (!searchOptions.title) &&
+                        (!searchOptions.notDone) &&
+                        (!searchOptions.done) &&
+                        (!searchOptions.high) &&
+                        (!searchOptions.medium) &&
+                        (!searchOptions.light) && 
+                        (!searchOptions.normal)) {
+                            setSearchOptions({
+                                isSearching: false,
+                            })
+                        } if (searchOptions.title) {
+                            setSearchOptions({
+                                title: searchOptions.title,
+                                isSearching: true,
+                            })
+                        }
                 }
+                setNotFoundText(searchOptions.isSearching ? notFoundTodosText : zeroTodosText)
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
             }
         }
+    }
 
      useEffect(() => {
         blurLoadingEffect()

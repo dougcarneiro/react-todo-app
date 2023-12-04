@@ -3,7 +3,7 @@ import Modal from '@mui/material/Modal';
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
 
-import { useOnTodoRemoveContext } from '@/app/hooks/OnTodoRemoveContext';
+import { useOnTodoRemoveContext } from '@/hooks/OnTodoRemoveContext';
 
 
 export default function RemoveModal({todo}) {

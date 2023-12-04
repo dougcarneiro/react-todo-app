@@ -6,7 +6,7 @@ import Drawer from '@mui/material/Drawer';
 import ProfileButton from './ProfileButton';
 import { Icon } from '@iconify/react';
 import { getTodosCountByProfileId, logOut } from '@/services/supabase/supabase';
-import { formatDate } from '@/lib/format';
+import { formatDate } from '@/utils/date';
 import Spinner from './Spinner';
 
 

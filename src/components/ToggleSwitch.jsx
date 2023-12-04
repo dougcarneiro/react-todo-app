@@ -1,5 +1,5 @@
-import { useOnStatusChangeContext } from '@/app/hooks/OnStatusChangeContext';
-import { useTodoContext } from '@/app/hooks/TodoContext';
+import { useOnStatusChangeContext } from '@/hooks/OnStatusChangeContext';
+import { useTodoContext } from '@/hooks/TodoContext';
 import { useState, useEffect } from 'react';
 
 

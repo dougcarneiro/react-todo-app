@@ -1,6 +1,6 @@
-import { formatDate } from '@/lib/format';
+import { formatDate } from '@/utils/date';
 import ToggleSwitch from './ToggleSwitch';
-import { TodoContext } from '@/app/hooks/TodoContext';
+import { TodoContext } from '@/hooks/TodoContext';
 import EditTodoModal from './EditTodoModal';
 import RemoveModal from './RemoveModal';
 

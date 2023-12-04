@@ -1,7 +1,7 @@
-import { useOnTodoAddedContext } from '@/app/hooks/OnTodoAddedContext';
-import { useOnTodoEditeContext } from '@/app/hooks/OnTodoEditedContext';
-import { formatDate } from '@/lib/format';
-import Todos from '@/lib/todos';
+import { useOnTodoAddedContext } from '@/hooks/OnTodoAddedContext';
+import { useOnTodoEditeContext } from '@/hooks/OnTodoEditedContext';
+import { formatDate } from '@/utils/date';
+import Todos from '@/utils/todos';
 import { useState } from 'react';
 
 
