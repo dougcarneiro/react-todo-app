@@ -183,7 +183,7 @@ export default function Profile({profile}) {
                     className="text-xl text-violet-200"
                     rotate="180deg"
                 />
-                <span className="font-montserrat hidden md:block">Logout</span> 
+                <span className="font-montserrat hidden lg:block">Logout</span> 
             </button>
         </div>
         </div>
