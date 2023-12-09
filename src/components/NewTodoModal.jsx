@@ -60,7 +60,7 @@ export default function NewTodoModal() {
         </div>
         <TodoForm 
             formTitle={'Novo Afazer'}
-            onCreate={handleClose}
+            onSubmit={handleClose}
             isCreating={true}/>
         </Box>
       </Modal>

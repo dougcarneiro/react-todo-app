@@ -59,7 +59,7 @@ export default function EditTodoModal({ todo }) {
             {...todo}
             onCancel={handleClose}
             formTitle={'Alterar Afazer'}
-            onEdit={handleClose}
+            onSubmit={handleClose}
             isCreating={false}
           />
         </Box>

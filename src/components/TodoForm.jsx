@@ -1,7 +1,5 @@
-import { useOnTodoAddedContext } from '@/hooks/OnTodoAddedContext';
-import { useOnTodoEditeContext } from '@/hooks/OnTodoEditedContext';
+import { useOnTodoSubmittedContext } from '@/hooks/OnTodoSubmittedContext';
 import { formatDate } from '@/utils/date';
-import Todos from '@/utils/todos';
 import { useState } from 'react';
 
 
@@ -13,20 +11,17 @@ export function TodoForm(
     date, 
     created_at, 
     formTitle, 
-    isCreating, 
-    onCreate, 
-    onEdit }) {
+    isCreating,
+    onSubmit}) {
 
-  const onTodoAdded = useOnTodoAddedContext()
-
-  const onTodoEdited = useOnTodoEditeContext()
+  const onTodoSubmitted = useOnTodoSubmittedContext()
 
   const [formData, setFormData] = useState({
     title: title || '',
     text: text || '',
     priority: priority || 'normal',
     date: date || new Date().toISOString(),
-  });
+  })
 
 
   const handleChange = (e) => {
@@ -34,8 +29,8 @@ export function TodoForm(
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
   function handleBlur() {
     setFormData((prevData) => ({
@@ -45,7 +40,6 @@ export function TodoForm(
       })
     )
   }
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,34 +54,21 @@ export function TodoForm(
       todo.id = id
     }
 
-
     if (!todo.created_at) {
       todo.created_at = new Date().toISOString()
     }
 
-    try {
-      await Todos.update(todo, isCreating);
+    onSubmit()
+    onTodoSubmitted(todo, isCreating)
+
+    setFormData({
+      title: '',
+      text: '',
+      priority: 'normal',
+      date: new Date().toISOString(),
+    })   
   
-    } catch (error) {
-      console.error('Erro durante a execução assíncrona:', error);
-    }
-
-    if (onTodoEdited) {
-      onEdit()
-      onTodoEdited()
-    }      
-
-    if (onTodoAdded) {
-      onCreate()
-      onTodoAdded();
-      setFormData({
-        title: '',
-        text: '',
-        priority: 'normal',
-        date: new Date().toISOString(),
-      });    
-    }
-  };
+  }
 
     return (
         <>

@@ -6,8 +6,7 @@ import Todos from "@/utils/todos";
 
 import { useEffect, useState } from 'react';
 import { onStatusChangeContext } from "../hooks/OnStatusChangeContext";
-import { onTodoAddedContext } from "../hooks/OnTodoAddedContext";
-import { onTodoEditedContext } from "../hooks/OnTodoEditedContext";
+import { onTodoSubmittedContext } from "../hooks/OnTodoSubmittedContext";
 import { onTodoRemoveContext } from "../hooks/OnTodoRemoveContext";
 import LogInRedirectButton from "@/components/LogInRedirectButton";
 import NewTodoModal from "@/components/NewTodoModal";
@@ -98,8 +97,9 @@ export function Home() {
         setShowSpinner(true)
     }
 
-    const todoChange = async () => {
+    const todoChange = async (todo, isCreating) => {
         blurLoadingEffect()
+        await Todos.update(todo, isCreating)
         setFetchTodos(false)
     }
 
@@ -146,9 +146,9 @@ export function Home() {
                 {!user && fetchedUser && (<LogInRedirectButton/>)}
             </div>
             <div className="fixed bottom-8 left-8 md:top-8 z-[99]">
-                <onTodoAddedContext.Provider value={todoChange}>
+                <onTodoSubmittedContext.Provider value={todoChange}>
                     <NewTodoModal/>
-                </onTodoAddedContext.Provider>
+                </onTodoSubmittedContext.Provider>
             </div>
         {showSpinner && (
             <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[99]">
@@ -156,7 +156,7 @@ export function Home() {
             </div>
         )}
         <onStatusChangeContext.Provider value={statusChange}>
-            <onTodoEditedContext.Provider value={todoChange}>
+            <onTodoSubmittedContext.Provider value={todoChange}>
                 <onTodoRemoveContext.Provider value={removeData}>
                     {todos && (
                         <div className={`todo ${blurTodos} mx-2 mb-10 mt-12 grid grid-cols-1 gap-2 md:mx-8 md:grid-cols-2 xl:grid-cols-2`}>
@@ -169,7 +169,7 @@ export function Home() {
                         </div>
                     )}
                 </onTodoRemoveContext.Provider>
-            </onTodoEditedContext.Provider>
+            </onTodoSubmittedContext.Provider>
         </onStatusChangeContext.Provider>
         </div>
         </>

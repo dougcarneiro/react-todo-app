@@ -5,25 +5,28 @@ import EditTodoModal from './EditTodoModal';
 import RemoveModal from './RemoveModal';
 
 
-const background = {
-    normal: 'bg-white',
-    light: 'bg-yellow-100',
-    medium: 'bg-orange-200',
-    high: 'bg-red-200'
-  }
 
 export default function TodoCard({todo}) {
-
+    
     function priorityColor(priority) {
-        if (priority == 'light') {
-            return background.light
-          } else if (priority == 'medium'){
-            return background.medium
-          } else if (priority == 'high'){
-            return background.high
-          } else {
-            return background.normal
+        
+        const background = {
+            normal: 'bg-white',
+            light: 'bg-yellow-100',
+            medium: 'bg-orange-200',
+            high: 'bg-red-200'
           }
+        
+        switch(priority) {
+            case 'light':
+                return background.light
+            case 'medium':
+                return background.medium
+            case 'high':
+                return background.high
+            case 'normal':
+                return background.normal
+        }
     }
 
     return (
