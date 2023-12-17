@@ -11,7 +11,7 @@ import ErrorFieldText from '@/components/ErrorFieldText';
 
 
 export default function RecoverPassForm() {
-
+    
     const defaultFieldStyle = 'border-violet-200'
     const defaultFieldErrorStyle = 'border-red-500 bg-red-100'
 
@@ -42,7 +42,7 @@ export default function RecoverPassForm() {
                 if (fetchUser) {
                     setUser(fetchUser)
                 } else {
-                    // window.location.href = "/"
+                    window.location.href = "/"
                 }
                 setFetchedUser(true)
             } catch (error) {
@@ -55,7 +55,7 @@ export default function RecoverPassForm() {
     useEffect(() => {
         if (searchParams.get('recoverPassToken')) {
         } else {
-            // window.location.href = "/"
+            window.location.href = "/"
         }
     }, [])
 
